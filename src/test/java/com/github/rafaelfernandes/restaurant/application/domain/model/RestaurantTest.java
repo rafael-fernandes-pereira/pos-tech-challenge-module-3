@@ -1,6 +1,7 @@
 package com.github.rafaelfernandes.restaurant.application.domain.model;
 
 import com.github.rafaelfernandes.restaurant.application.model.Restaurant;
+import com.github.rafaelfernandes.restaurant.common.Cuisine;
 import com.github.rafaelfernandes.restaurant.common.State;
 import com.github.rafaelfernandes.restaurant.util.GenerateData;
 import net.datafaker.Faker;
@@ -145,10 +146,9 @@ public class RestaurantTest {
 
             String newName = faker.restaurant().name();
 
-            Restaurant changeName = this.restaurant.changeName(newName);
-
-            assertEquals(this.restaurant.getRestaurantId(), changeName.getRestaurantId());
-            assertEquals(newName, changeName.getName());
+            this.restaurant.changeName(newName);
+            assertEquals(newName, this.restaurant.getName());
+            assertTrue(this.restaurant.getStateChange());
 
         }
 
@@ -157,15 +157,16 @@ public class RestaurantTest {
 
             Restaurant.Address newAddress = GenerateData.generateAddress();
 
-            Restaurant changeAddress = restaurant.changeAddress(newAddress);
+            this.restaurant.changeAddress(newAddress);
 
-            assertEquals(this.restaurant.getRestaurantId(), changeAddress.getRestaurantId());
-            assertEquals(newAddress.getStreet(), changeAddress.getAddress().getStreet());
-            assertEquals(newAddress.getNumber(), changeAddress.getAddress().getNumber());
-            assertEquals(newAddress.getAddittionalDetails(), changeAddress.getAddress().getAddittionalDetails());
-            assertEquals(newAddress.getNeighborhood(), changeAddress.getAddress().getNeighborhood());
-            assertEquals(newAddress.getCity(), changeAddress.getAddress().getCity());
-            assertEquals(newAddress.getState(), changeAddress.getAddress().getState());
+            assertEquals(newAddress.getStreet(), this.restaurant.getAddress().getStreet());
+            assertEquals(newAddress.getNumber(), this.restaurant.getAddress().getNumber());
+            assertEquals(newAddress.getAddittionalDetails(), this.restaurant.getAddress().getAddittionalDetails());
+            assertEquals(newAddress.getNeighborhood(), this.restaurant.getAddress().getNeighborhood());
+            assertEquals(newAddress.getCity(), this.restaurant.getAddress().getCity());
+            assertEquals(newAddress.getState(), this.restaurant.getAddress().getState());
+
+            assertTrue(this.restaurant.getStateChange());
 
 
         }
@@ -179,11 +180,32 @@ public class RestaurantTest {
                     LocalTime.of(12, 30)
                     );
 
-            Restaurant addOpeningHourRestauran = this.restaurant.addOpeningHours(openingHour);
+            var isAdd = this.restaurant.addOpeningHours(openingHour);
 
-            assertEquals(this.restaurant.getRestaurantId(), addOpeningHourRestauran.getRestaurantId());
+            assertTrue(isAdd);
+            assertTrue(this.restaurant.getOpeningHours().contains(openingHour));
 
-            assertTrue(addOpeningHourRestauran.getOpeningHours().contains(openingHour));
+            assertTrue(this.restaurant.getStateChange());
+        }
+
+        @Test
+        void addSameOpeningHourRestaurant(){
+
+            Restaurant.OpeningHour openingHour = new Restaurant.OpeningHour(
+                    DayOfWeek.FRIDAY,
+                    LocalTime.of(9, 0),
+                    LocalTime.of(18, 0)
+            );
+
+            var isNotAdd = this.restaurant.addOpeningHours(openingHour);
+            var size = this.restaurant.getOpeningHours().size();
+
+            assertEquals(size, this.restaurant.getOpeningHours().size());
+            assertFalse(isNotAdd);
+
+            assertFalse(this.restaurant.getStateChange());
+
+
         }
 
         @Test
@@ -195,23 +217,109 @@ public class RestaurantTest {
                     LocalTime.of(18, 0)
             );
 
-            Restaurant removeOpeningHourRestaurant = this.restaurant.removeOpeningHours(openingHour);
+            var isRemove = this.restaurant.removeOpeningHours(openingHour);
 
-            assertEquals(this.restaurant.getRestaurantId(), removeOpeningHourRestaurant.getRestaurantId());
+            assertTrue(isRemove);
+            assertFalse(this.restaurant.getOpeningHours().contains(openingHour));
+            assertTrue(this.restaurant.getStateChange());
 
-            assertFalse(removeOpeningHourRestaurant.getOpeningHours().contains(openingHour));
         }
 
         @Test
         void changeNumberOfTablesRestaurant(){
 
-            Integer numberOfTables = 10;
+            var numberOfTables = 10;
 
-            Restaurant changeNumberOfTablesRestaurant = this.restaurant.changeNumberOfTables(numberOfTables);
+            this.restaurant.changeNumberOfTables(numberOfTables);
 
-            assertEquals(this.restaurant.getRestaurantId(), changeNumberOfTablesRestaurant.getRestaurantId());
+            assertEquals(numberOfTables, this.restaurant.getTables());
+            assertTrue(this.restaurant.getStateChange());
+        }
 
-            assertEquals(numberOfTables, changeNumberOfTablesRestaurant.getTables());
+        @Test
+        void changeNumberOfTablesToZeroRestaurant(){
+
+            var oldNumberOfTables = this.restaurant.getTables();
+
+            var numberOfTables = 0;
+
+            this.restaurant.changeNumberOfTables(numberOfTables);
+
+            assertEquals(oldNumberOfTables, this.restaurant.getTables());
+            assertFalse(this.restaurant.getStateChange());
+        }
+
+        @Test
+        void changeNumberOfTablesToNegativeRestaurant(){
+
+            var oldNumberOfTables = this.restaurant.getTables();
+
+            var numberOfTables = -1;
+
+            this.restaurant.changeNumberOfTables(numberOfTables);
+
+            assertEquals(oldNumberOfTables, this.restaurant.getTables());
+            assertFalse(this.restaurant.getStateChange());
+        }
+
+        @Test
+        void addCuisineRestaurant(){
+            var cuisine = Cuisine.AMERICAN;
+
+            var isAdd = this.restaurant.addCuisine(cuisine);
+
+            assertTrue(this.restaurant.getCuisines().contains(cuisine));
+            assertTrue(isAdd);
+            assertTrue(this.restaurant.getStateChange());
+        }
+
+        @Test
+        void addTwoSameCuisineRestaurantu(){
+            var cuisine = Cuisine.BRAZILIAN;
+
+            var isAdd = this.restaurant.addCuisine(cuisine);
+
+            Restaurant restaurantCopy = Restaurant.of(
+                    this.restaurant.getRestaurantId().getValue(),
+                    this.restaurant.getName(),
+                    this.restaurant.getAddress(),
+                    this.restaurant.getRegister(),
+                    this.restaurant.getOpeningHours(),
+                    this.restaurant.getTables(),
+                    this.restaurant.getCuisines()
+            );
+
+            var isNotAdd = restaurantCopy.addCuisine(cuisine);
+
+            assertTrue(isAdd);
+            assertTrue(restaurantCopy.getCuisines().contains(cuisine));
+            assertEquals(1, restaurantCopy.getCuisines().size());
+            assertFalse(isNotAdd);
+            assertFalse(restaurantCopy.getStateChange());
+
+        }
+
+        @Test
+        void removeCuisineRestaurant(){
+            var cuisine = Cuisine.BRAZILIAN;
+
+            var isAdd = this.restaurant.addCuisine(cuisine);
+
+            Restaurant restaurantCopy = Restaurant.of(
+                    this.restaurant.getRestaurantId().getValue(),
+                    this.restaurant.getName(),
+                    this.restaurant.getAddress(),
+                    this.restaurant.getRegister(),
+                    this.restaurant.getOpeningHours(),
+                    this.restaurant.getTables(),
+                    this.restaurant.getCuisines()
+            );
+
+            var isRemove = restaurantCopy.removeCuisine(cuisine);
+
+            assertTrue(isAdd);
+            assertTrue(isRemove);
+            assertTrue(restaurantCopy.getStateChange());
         }
 
 

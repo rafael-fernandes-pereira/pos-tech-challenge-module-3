@@ -20,17 +20,19 @@ public class Restaurant {
 
     private final RestaurantId restaurantId;
 
-    private final String name;
+    private String name;
 
-    private final Address address;
+    private Address address;
 
     private final LocalDateTime register;
 
-    private final List<OpeningHour> openingHours;
+    private List<OpeningHour> openingHours;
 
-    private final Integer tables;
+    private Integer tables;
 
-    private final List<Cuisine> cuisines;
+    private List<Cuisine> cuisines;
+
+    private Boolean stateChange;
 
     @Value
     public static class RestaurantId {
@@ -57,84 +59,79 @@ public class Restaurant {
 
     public static Restaurant create(String name, Address address){
 
-        RestaurantId restaurantId = new RestaurantId(UUID.randomUUID());
+        var restaurantId = new RestaurantId(UUID.randomUUID());
 
-        LocalDateTime register = LocalDateTime.now();
+        var register = LocalDateTime.now();
 
-        List<OpeningHour> openingHours = new ArrayList<>();
+        var openingHours = new ArrayList<OpeningHour>();
         for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
             LocalTime start = LocalTime.of(9, 0);
             LocalTime end = LocalTime.of(18, 0);
             openingHours.add(new OpeningHour(dayOfWeek, start, end));
         }
 
-        return new Restaurant(restaurantId, name, address, register, openingHours, 0, null);
+        return new Restaurant(restaurantId, name, address, register, openingHours, 0, new ArrayList<Cuisine>(), Boolean.FALSE);
     }
 
     public static Restaurant of(UUID restaurantId, String name, Address address, LocalDateTime register, List<OpeningHour> openingHours, Integer numberOfTables, List<Cuisine> cuisines){
-        return new Restaurant(new RestaurantId(restaurantId), name, address, register, openingHours, numberOfTables, cuisines);
+        return new Restaurant(new RestaurantId(restaurantId), name, address, register, openingHours, numberOfTables, cuisines, Boolean.FALSE);
     }
 
-    public Restaurant changeName(String name){
-        return new Restaurant(this.restaurantId,
-                name,
-                this.address,
-                this.register,
-                this.openingHours,
-                this.tables,
-                this.cuisines
-        );
+    public void changeName(String name){
+        this.stateChange = Boolean.TRUE;
+        this.name = name;
     }
 
-    public Restaurant changeAddress(Address address){
-        return new Restaurant(this.restaurantId,
-                this.name,
-                address,
-                this.register,
-                this.openingHours,
-                this.tables,
-                this.cuisines
-        );
+    public void changeAddress(Address address){
+        this.stateChange = Boolean.TRUE;
+        this.address = address;
     }
 
-    public Restaurant addOpeningHours(OpeningHour openingHour){
-        List<OpeningHour> openingHoursNew = this.getOpeningHours();
-        openingHoursNew.add(openingHour);
+    public Boolean addOpeningHours(OpeningHour openingHour){
+        if (this.openingHours.contains(openingHour))
+            return Boolean.FALSE;
 
-        return new Restaurant(this.restaurantId,
-                this.name,
-                this.address,
-                this.register,
-                openingHoursNew,
-                this.tables,
-                this.cuisines
-        );
+        this.openingHours.add(openingHour);
+        this.stateChange = Boolean.TRUE;
+
+        return Boolean.TRUE;
     }
 
-    public Restaurant removeOpeningHours(OpeningHour openingHour){
-        List<OpeningHour> openingHoursNew = this.getOpeningHours();
-        openingHoursNew.remove(openingHour);
+    public Boolean removeOpeningHours(OpeningHour openingHour){
+        if (this.openingHours.remove(openingHour)){
+            this.stateChange = Boolean.TRUE;
+            return Boolean.TRUE;
+        }
 
-        return new Restaurant(this.restaurantId,
-                this.name,
-                this.address,
-                this.register,
-                openingHoursNew,
-                this.tables,
-                this.cuisines
-        );
+        return Boolean.FALSE;
     }
 
+    public void changeNumberOfTables(Integer numberOfTables){
+        if (numberOfTables > 0){
+            this.stateChange = Boolean.TRUE;
+            this.tables = numberOfTables;
+        }
+    }
 
-    public Restaurant changeNumberOfTables(Integer numberOfTables){
-        return new Restaurant(this.restaurantId,
-                this.name,
-                this.address,
-                this.register,
-                this.openingHours,
-                numberOfTables,
-                this.cuisines
-        );
+    public Boolean addCuisine(Cuisine cuisine){
+        if (this.cuisines.contains(cuisine)){
+            return Boolean.FALSE;
+        }
+
+        this.cuisines.add(cuisine);
+        this.stateChange = Boolean.TRUE;
+
+        return Boolean.TRUE;
+    }
+
+    public Boolean removeCuisine(Cuisine cuisine){
+
+        if(this.cuisines.remove(cuisine)){
+            this.stateChange = Boolean.TRUE;
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+
     }
 
 

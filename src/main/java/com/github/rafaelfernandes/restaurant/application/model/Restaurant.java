@@ -9,26 +9,28 @@ import lombok.Value;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Restaurant {
 
-    @Getter private final RestaurantId restaurantId;
+    private final RestaurantId restaurantId;
 
-    @Getter private final String name;
+    private final String name;
 
-    @Getter private final Address address;
+    private final Address address;
 
-    @Getter private final LocalDateTime register;
+    private final LocalDateTime register;
 
-    @Getter private final List<OpeningHour> openingHours;
+    private final List<OpeningHour> openingHours;
 
-    @Getter private final List<Table> tables;
+    private final Integer tables;
 
-    @Getter private final List<Cuisine> cuisines;
+    private final List<Cuisine> cuisines;
 
     @Value
     public static class RestaurantId {
@@ -37,7 +39,7 @@ public class Restaurant {
 
     @Value
     public static class Address{
-        String publicArea;
+        String street;
         Integer number;
         String addittionalDetails;
         String neighborhood;
@@ -49,45 +51,93 @@ public class Restaurant {
     @Value
     public static class OpeningHour {
         DayOfWeek dayOfWeek;
-        LocalDateTime start;
-        LocalDateTime end;
+        LocalTime start;
+        LocalTime end;
     }
 
-    @Value
-    public static class Table {
-        public static final Integer NUMBER_OF_SEATS = 4;
-    }
-
-    public static Restaurant create(String name, Address address, Integer numberOfTables){
+    public static Restaurant create(String name, Address address){
 
         RestaurantId restaurantId = new RestaurantId(UUID.randomUUID());
 
         LocalDateTime register = LocalDateTime.now();
 
-        ArrayList<Table> tables = getTables(numberOfTables);
-
         List<OpeningHour> openingHours = new ArrayList<>();
         for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-            LocalDateTime start = LocalDateTime.of(2024, 1, 1, 9, 0); // Exemplo: 9h
-            LocalDateTime end = LocalDateTime.of(2024, 1, 1, 18, 0);  // Exemplo: 18h
+            LocalTime start = LocalTime.of(9, 0);
+            LocalTime end = LocalTime.of(18, 0);
             openingHours.add(new OpeningHour(dayOfWeek, start, end));
         }
 
-        return new Restaurant(restaurantId, name, address, register, openingHours, tables, null);
-    }
-
-    private static ArrayList<Table> getTables(Integer numberOfTables) {
-        ArrayList<Table> tables = new ArrayList<>(numberOfTables);
-
-        for (int i = 0; i < numberOfTables; i++) {
-            tables.add(new Table());
-        }
-        return tables;
+        return new Restaurant(restaurantId, name, address, register, openingHours, 0, null);
     }
 
     public static Restaurant of(UUID restaurantId, String name, Address address, LocalDateTime register, List<OpeningHour> openingHours, Integer numberOfTables, List<Cuisine> cuisines){
-        return new Restaurant(new RestaurantId(restaurantId), name, address, register, openingHours, getTables(numberOfTables), cuisines);
+        return new Restaurant(new RestaurantId(restaurantId), name, address, register, openingHours, numberOfTables, cuisines);
     }
+
+    public Restaurant changeName(String name){
+        return new Restaurant(this.restaurantId,
+                name,
+                this.address,
+                this.register,
+                this.openingHours,
+                this.tables,
+                this.cuisines
+        );
+    }
+
+    public Restaurant changeAddress(Address address){
+        return new Restaurant(this.restaurantId,
+                this.name,
+                address,
+                this.register,
+                this.openingHours,
+                this.tables,
+                this.cuisines
+        );
+    }
+
+    public Restaurant addOpeningHours(OpeningHour openingHour){
+        List<OpeningHour> openingHoursNew = this.getOpeningHours();
+        openingHoursNew.add(openingHour);
+
+        return new Restaurant(this.restaurantId,
+                this.name,
+                this.address,
+                this.register,
+                openingHoursNew,
+                this.tables,
+                this.cuisines
+        );
+    }
+
+    public Restaurant removeOpeningHours(OpeningHour openingHour){
+        List<OpeningHour> openingHoursNew = this.getOpeningHours();
+        openingHoursNew.remove(openingHour);
+
+        return new Restaurant(this.restaurantId,
+                this.name,
+                this.address,
+                this.register,
+                openingHoursNew,
+                this.tables,
+                this.cuisines
+        );
+    }
+
+
+    public Restaurant changeNumberOfTables(Integer numberOfTables){
+        return new Restaurant(this.restaurantId,
+                this.name,
+                this.address,
+                this.register,
+                this.openingHours,
+                numberOfTables,
+                this.cuisines
+        );
+    }
+
+
 
 
 

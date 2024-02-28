@@ -1,5 +1,8 @@
 package com.github.rafaelfernandes.restaurant.common;
 
+import lombok.Getter;
+
+@Getter
 public enum State {
     AC("Acre"),
     AL("Alagoas"),
@@ -33,10 +36,6 @@ public enum State {
 
     State(String nomeCompleto) {
         this.nomeCompleto = nomeCompleto;
-    }
-
-    public String getNomeCompleto() {
-        return nomeCompleto;
     }
 }
 

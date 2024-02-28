@@ -1,5 +1,8 @@
 package com.github.rafaelfernandes.restaurant.common;
 
+import lombok.Getter;
+
+@Getter
 public enum Cuisine {
 
     AMERICAN,
@@ -37,10 +40,6 @@ public enum Cuisine {
 
     Cuisine() {
         this.name = name().toUpperCase().replace("_", " ");
-    }
-
-    public String getName() {
-        return name;
     }
 
 }

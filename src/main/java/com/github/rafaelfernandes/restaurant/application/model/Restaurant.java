@@ -1,7 +1,7 @@
 package com.github.rafaelfernandes.restaurant.application.model;
 
-import com.github.rafaelfernandes.restaurant.common.Cuisine;
-import com.github.rafaelfernandes.restaurant.common.State;
+import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
+import com.github.rafaelfernandes.restaurant.common.enums.State;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -133,10 +133,4 @@ public class Restaurant {
         return Boolean.FALSE;
 
     }
-
-
-
-
-
-
 }

@@ -1,11 +1,10 @@
 package com.github.rafaelfernandes.restaurant.util;
 
 import com.github.rafaelfernandes.restaurant.application.model.Restaurant;
-import com.github.rafaelfernandes.restaurant.common.State;
+import com.github.rafaelfernandes.restaurant.common.enums.State;
 import net.datafaker.Faker;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 

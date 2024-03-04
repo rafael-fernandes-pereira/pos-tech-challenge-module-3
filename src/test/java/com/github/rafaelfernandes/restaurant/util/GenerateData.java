@@ -1,6 +1,7 @@
 package com.github.rafaelfernandes.restaurant.util;
 
-import com.github.rafaelfernandes.restaurant.application.model.Restaurant;
+import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
+import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantAddressCommand;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
 import net.datafaker.Faker;
 
@@ -41,6 +42,16 @@ public class GenerateData {
                 faker.name().lastName(),
                 faker.address().city(),
                 State.valueOf(faker.address().stateAbbr()));
+    }
+
+    public static CreateRestaurantAddressCommand generateAddressCommand(){
+        return new CreateRestaurantAddressCommand(faker.address().streetAddress(),
+                Integer.valueOf(faker.address().streetAddressNumber()),
+                faker.address().secondaryAddress(),
+                faker.name().lastName(),
+                faker.address().city(),
+                State.valueOf(faker.address().stateAbbr())
+        );
     }
 
 

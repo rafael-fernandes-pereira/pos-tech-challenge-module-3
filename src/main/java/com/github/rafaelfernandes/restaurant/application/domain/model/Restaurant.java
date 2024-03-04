@@ -1,4 +1,4 @@
-package com.github.rafaelfernandes.restaurant.application.model;
+package com.github.rafaelfernandes.restaurant.application.domain.model;
 
 import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
 import com.github.rafaelfernandes.restaurant.common.enums.State;

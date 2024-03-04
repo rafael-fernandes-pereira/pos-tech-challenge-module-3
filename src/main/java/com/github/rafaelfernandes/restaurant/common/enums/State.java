@@ -1,6 +1,10 @@
 package com.github.rafaelfernandes.restaurant.common.enums;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.Getter;
+
+import java.util.HashSet;
+import java.util.Optional;
 
 @Getter
 public enum State {
@@ -36,6 +40,19 @@ public enum State {
 
     State(String nomeCompleto) {
         this.nomeCompleto = nomeCompleto;
+    }
+
+    public static State of(String state){
+
+        try {
+            return State.valueOf(state);
+        } catch (IllegalArgumentException ecx) {
+
+            HashSet
+
+            throw new ConstraintViolationException(new HashSet<>());
+        }
+
     }
 }
 

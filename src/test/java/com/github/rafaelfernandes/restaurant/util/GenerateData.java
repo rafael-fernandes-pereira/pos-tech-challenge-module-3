@@ -50,7 +50,7 @@ public class GenerateData {
                 faker.address().secondaryAddress(),
                 faker.name().lastName(),
                 faker.address().city(),
-                State.valueOf(faker.address().stateAbbr())
+                faker.address().stateAbbr()
         );
     }
 

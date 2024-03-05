@@ -41,18 +41,5 @@ public enum State {
     State(String nomeCompleto) {
         this.nomeCompleto = nomeCompleto;
     }
-
-    public static State of(String state){
-
-        try {
-            return State.valueOf(state);
-        } catch (IllegalArgumentException ecx) {
-
-            HashSet
-
-            throw new ConstraintViolationException(new HashSet<>());
-        }
-
-    }
 }
 

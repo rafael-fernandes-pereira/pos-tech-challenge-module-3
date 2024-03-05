@@ -110,7 +110,7 @@ public class CreateRestaurantCommandTest {
         String addittionalDetails = "Lanchonete da escola";
         String neighborhood = "Silver Lake";
         String city = "Los Angeles";
-        State state = State.MG;
+        String state = State.MG.name();
 
         @Test
         void validateAddressSuccess(){
@@ -641,7 +641,7 @@ public class CreateRestaurantCommandTest {
             @Test
             void validateNullState(){
 
-                State state = null;
+                String state = null;
 
                 assertThatThrownBy(() -> {
                     new CreateRestaurantAddressCommand(
@@ -668,11 +668,11 @@ public class CreateRestaurantCommandTest {
                             addittionalDetails,
                             neighborhood,
                             city,
-                            State.valueOf("TESTE")
+                            "Teste"
                     );
                 })
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining("No enum constant");
+                        .isInstanceOf(ConstraintViolationException.class)
+                        .hasMessageContaining("state: O campo deve ser uma sigla de estado válida");
 
             }
 

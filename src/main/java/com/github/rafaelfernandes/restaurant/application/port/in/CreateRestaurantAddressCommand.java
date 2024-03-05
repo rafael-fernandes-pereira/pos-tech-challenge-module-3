@@ -1,6 +1,7 @@
 package com.github.rafaelfernandes.restaurant.application.port.in;
 
 import com.github.rafaelfernandes.restaurant.common.enums.State;
+import com.github.rafaelfernandes.restaurant.common.validation.ValueOfEnum;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -29,11 +30,12 @@ public record CreateRestaurantAddressCommand (
         String city,
 
         @NotNull(message = "O campo deve estar preenchido")
-        State state
+        @ValueOfEnum(enumClass = State.class, message = "O campo deve ser uma sigla de estado válida")
+        String state
 
 ){
 
-        public CreateRestaurantAddressCommand(String street, Integer number, String addittionalDetails, String neighborhood, String city, State state) {
+        public CreateRestaurantAddressCommand(String street, Integer number, String addittionalDetails, String neighborhood, String city, String state) {
                 this.street = street;
                 this.number = number;
                 this.addittionalDetails = addittionalDetails;

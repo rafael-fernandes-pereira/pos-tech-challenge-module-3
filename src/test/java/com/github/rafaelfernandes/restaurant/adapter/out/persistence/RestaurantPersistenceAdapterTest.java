@@ -1,6 +1,10 @@
 package com.github.rafaelfernandes.restaurant.adapter.out.persistence;
 
+import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantCommand;
+import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicateException;
 import com.github.rafaelfernandes.restaurant.util.GenerateData;
+import jakarta.validation.ConstraintViolationException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -19,6 +24,11 @@ class RestaurantPersistenceAdapterTest {
 
     @Autowired
     private RestaurantRepository restaurantRepository;
+
+    @AfterEach
+    void tearDown(){
+        restaurantRepository.deleteAll();
+    }
 
     @Nested
     class Create {
@@ -36,6 +46,21 @@ class RestaurantPersistenceAdapterTest {
             assertThat(restaurant.getName()).isEqualTo(restaurantSaved.get().getName());
             assertThat(restaurant.getTables()).isEqualTo(restaurantSaved.get().getTables());
             assertThat(restaurant.getAddress().getStreet()).isEqualTo(restaurantSaved.get().getAddress().getStreet());
+
+
+        }
+
+        @Test
+        void saveDuplicateRestaurantError(){
+
+            var restaurant = GenerateData.createRestaurant();
+            restaurantPersistenceAdapter.create(restaurant);
+
+            assertThatThrownBy(() -> {
+                restaurantPersistenceAdapter.create(restaurant);
+            })
+                    .isInstanceOf(RestaurantDuplicateException.class)
+                    .hasMessage("Nome já cadastrado!");
 
         }
 

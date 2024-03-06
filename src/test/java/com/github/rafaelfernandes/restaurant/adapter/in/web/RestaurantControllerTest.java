@@ -38,7 +38,7 @@ class RestaurantControllerTest {
         @Test
         void validateCreateRestaurantCommandError() throws Exception {
 
-            AddressRequest address = GenerateData.generateAddressRequest();
+            var address = GenerateData.generateAddressRequest();
 
             String name = null;
 
@@ -58,7 +58,7 @@ class RestaurantControllerTest {
         @Test
         void validateDuplicateRestaurantError() throws Exception {
 
-            RestaurantRequest restaurant = GenerateData.gerenRestaurantRequest();
+            var restaurant = GenerateData.gerenRestaurantRequest();
 
             when(saveDataRestaurantUseCase.create(any(CreateRestaurantCommand.class)))
                     .thenThrow(RestaurantDuplicateException.class);
@@ -77,9 +77,9 @@ class RestaurantControllerTest {
         @Test
         void validateCreateSucess() throws Exception {
 
-            RestaurantRequest restaurant = GenerateData.gerenRestaurantRequest();
+            var restaurant = GenerateData.gerenRestaurantRequest();
 
-            Restaurant.RestaurantId restaurantId = new Restaurant.RestaurantId(UUID.randomUUID());
+            var restaurantId = new Restaurant.RestaurantId(UUID.randomUUID());
 
             when(saveDataRestaurantUseCase.create(any(CreateRestaurantCommand.class)))
                     .thenReturn(restaurantId);

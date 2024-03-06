@@ -1,6 +1,6 @@
 package com.github.rafaelfernandes.restaurant.common.exception;
 
-public class RestaurantDuplicateException extends RestaurantException {
+public class RestaurantDuplicateException extends RuntimeException{
 
     private static final String ERROR = "Nome já cadastrado!";
 
@@ -10,6 +10,6 @@ public class RestaurantDuplicateException extends RestaurantException {
 
     @Override
     public String getMessage() {
-        return RestaurantDuplicateException.ERROR;
+        return ERROR;
     }
 }

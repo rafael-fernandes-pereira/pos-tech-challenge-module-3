@@ -8,7 +8,7 @@ import static com.github.rafaelfernandes.restaurant.common.validation.Validation
 
 public record CreateRestaurantCommand(
         @NotEmpty(message = "O campo deve estar preenchido")
-        @Length(min = 10, max = 100, message = "O campo deve ter no minimo 10 e no maximo 100 caracteres")
+        @Length(min = 3, max = 100, message = "O campo deve ter no minimo 3 e no maximo 100 caracteres")
         String name,
         @NotNull(message = "O campo deve estar preenchido")
         CreateRestaurantAddressCommand address

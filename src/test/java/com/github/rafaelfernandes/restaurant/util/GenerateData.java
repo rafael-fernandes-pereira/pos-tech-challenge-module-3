@@ -1,5 +1,8 @@
 package com.github.rafaelfernandes.restaurant.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.rafaelfernandes.restaurant.adapter.in.web.request.AddressRequest;
+import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantAddressCommand;
 import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantCommand;
@@ -56,10 +59,35 @@ public class GenerateData {
     }
 
     public static CreateRestaurantCommand createRestaurantCommand(){
-        String name = faker.restaurant().name().substring(0, 10);
+        String name = faker.restaurant().name();
         CreateRestaurantAddressCommand address = generateAddressCommand();
 
         return new CreateRestaurantCommand(name, address);
+    }
+
+    public static AddressRequest generateAddressRequest(){
+        return new AddressRequest(faker.address().streetAddress(),
+                Integer.valueOf(faker.address().streetAddressNumber()),
+                faker.address().secondaryAddress(),
+                faker.name().lastName(),
+                faker.address().city(),
+                faker.address().stateAbbr()
+        );
+    }
+
+    public static RestaurantRequest gerenRestaurantRequest(){
+        String name = faker.restaurant().name();
+        AddressRequest addressRequest = generateAddressRequest();
+
+        return new RestaurantRequest(name, addressRequest);
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

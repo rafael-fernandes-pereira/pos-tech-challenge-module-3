@@ -48,27 +48,27 @@ public class CreateRestaurantCommandTest {
                 new CreateRestaurantCommand(name, GenerateData.generateAddressCommand());
             })
                     .isInstanceOf(ConstraintViolationException.class)
-                    .hasMessageContainingAll("name: O campo deve estar preenchido", "name: O campo deve ter no minimo 10 e no maximo 100 caracteres");
+                    .hasMessageContainingAll("name: O campo deve estar preenchido", "name: O campo deve ter no minimo 3 e no maximo 100 caracteres");
 
         }
 
         @Test
         void validateLessMinimumName(){
 
-            String name = "Rafael F"; // 8 caracteres
+            String name = "Ra";
 
             assertThatThrownBy(() -> {
                 new CreateRestaurantCommand(name, GenerateData.generateAddressCommand());
             })
                     .isInstanceOf(ConstraintViolationException.class)
-                    .hasMessage("name: O campo deve ter no minimo 10 e no maximo 100 caracteres");
+                    .hasMessage("name: O campo deve ter no minimo 3 e no maximo 100 caracteres");
 
         }
 
         @Test
         void validateMinimumNameSucess(){
 
-            String name = "Rafael Dio"; // 10 Caracteres
+            String name = "Dio"; // 10 Caracteres
 
             CreateRestaurantCommand command = new CreateRestaurantCommand(name, GenerateData.generateAddressCommand());
 
@@ -85,7 +85,7 @@ public class CreateRestaurantCommandTest {
                 new CreateRestaurantCommand(name, GenerateData.generateAddressCommand());
             })
                     .isInstanceOf(ConstraintViolationException.class)
-                    .hasMessage("name: O campo deve ter no minimo 10 e no maximo 100 caracteres");
+                    .hasMessage("name: O campo deve ter no minimo 3 e no maximo 100 caracteres");
 
         }
 

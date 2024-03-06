@@ -17,12 +17,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = RestaurantController.class)
 class RestaurantControllerTest {
@@ -45,7 +45,7 @@ class RestaurantControllerTest {
             RestaurantRequest restaurant = new RestaurantRequest(name, address);
 
             mockMvc.perform(
-                            post("/restaurant/")
+                            post("/restaurants/")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content(GenerateData.asJsonString(restaurant))
                     )
@@ -64,7 +64,7 @@ class RestaurantControllerTest {
                     .thenThrow(RestaurantDuplicateException.class);
 
             mockMvc.perform(
-                            post("/restaurant/")
+                            post("/restaurants/")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content(GenerateData.asJsonString(restaurant))
                     )
@@ -85,11 +85,12 @@ class RestaurantControllerTest {
                     .thenReturn(restaurantId);
 
             mockMvc.perform(
-                            post("/restaurant/")
+                            post("/restaurants/")
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content(GenerateData.asJsonString(restaurant))
                     )
-                    .andExpect(status().isCreated());
+                    .andExpect(status().isCreated())
+                    .andExpect(header().string("Location", containsString("/restaurants/"+restaurantId.getValue().toString())));
 
             ;
 

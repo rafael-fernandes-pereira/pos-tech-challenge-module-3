@@ -21,7 +21,7 @@ import java.net.URI;
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/restaurant")
+@RequestMapping("/restaurants")
 public class RestaurantController {
 
     private final SaveDataRestaurantUseCase saveDataRestaurantUseCase;

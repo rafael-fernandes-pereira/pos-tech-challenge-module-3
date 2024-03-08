@@ -50,7 +50,7 @@ public class RestaurantController {
         var retaurantId = this.saveDataRestaurantUseCase.create(command);
 
         URI location = uriComponentsBuilder
-                .path("restaurant/{id}")
+                .path("restaurants/{id}")
                 .buildAndExpand(retaurantId.getValue())
                 .toUri();
 

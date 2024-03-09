@@ -1,15 +1,15 @@
+
 compile: # compile project
 	@./mvnw clean compile test-compile
 
-
 package:
-	@./mvnw package -DskipTests
+	@./mvnw clean package -DskipTests
 
 start-api:
 	@./mvnw clean spring-boot:run
 
 start-jar: package
-	@java -jar ./target/demo-codigo-*.jar
+	@java -jar ./target/restaurant-*.jar
 
 # Tests
 

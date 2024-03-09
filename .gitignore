@@ -31,3 +31,4 @@ target/
 /.attach_pid18842
 /allure-results/
 /.allure/
+/lombok.config

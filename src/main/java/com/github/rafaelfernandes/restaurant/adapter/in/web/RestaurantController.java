@@ -5,6 +5,11 @@ import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestauran
 import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantCommand;
 import com.github.rafaelfernandes.restaurant.application.port.in.SaveDataRestaurantUseCase;
 import com.github.rafaelfernandes.restaurant.common.annotations.WebAdapter;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,10 +27,16 @@ import java.net.URI;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/restaurants")
+@Tag(name = "Restaurant", description = "Restaurant Endpoint")
 public class RestaurantController {
 
     private final SaveDataRestaurantUseCase saveDataRestaurantUseCase;
 
+    @Operation(summary = "Create a Restaurant")
+    @ApiResponses(value = {
+            @ApiResponse(description = "Success", responseCode = "201", headers = {@Header(name = "/restaurant/id", description = "Location of restaurant")}),
+            @ApiResponse(description = "Bad Request", responseCode = "400")
+    })
     @PostMapping(
             path = "/",
             consumes = MediaType.APPLICATION_JSON_VALUE,

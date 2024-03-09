@@ -1,10 +1,6 @@
 package com.github.rafaelfernandes.restaurant.common.enums;
 
-import jakarta.validation.ConstraintViolationException;
 import lombok.Getter;
-
-import java.util.HashSet;
-import java.util.Optional;
 
 @Getter
 public enum State {

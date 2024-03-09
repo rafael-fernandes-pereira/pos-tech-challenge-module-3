@@ -12,7 +12,7 @@ public class Validation {
 
   // Your IDE may complain that the ValidatorFactory needs to be closed, but if we do that here,
   // we break the contract of ValidatorFactory#close.
-  private final static Validator validator =
+  private static final Validator validator =
           buildDefaultValidatorFactory().getValidator();
 
   /**

@@ -3,14 +3,11 @@ package com.github.rafaelfernandes.restaurant.adapter.in.web;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.AddressRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
 import com.github.rafaelfernandes.restaurant.adapter.out.persistence.RestaurantRepository;
-import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantAddressCommand;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
 import com.github.rafaelfernandes.restaurant.util.GenerateData;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RestaurantControllerTestIT {
 

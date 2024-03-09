@@ -8,7 +8,6 @@ import com.github.rafaelfernandes.restaurant.common.annotations.UseCase;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
 import lombok.RequiredArgsConstructor;
 
-import java.util.UUID;
 
 @UseCase
 @RequiredArgsConstructor

@@ -30,3 +30,4 @@ target/
 /.attach_pid26183
 /.attach_pid18842
 /allure-results/
+/.allure/

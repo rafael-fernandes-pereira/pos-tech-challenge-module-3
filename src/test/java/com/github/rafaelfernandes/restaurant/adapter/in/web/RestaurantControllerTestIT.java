@@ -10,6 +10,9 @@ import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -49,30 +52,10 @@ public class RestaurantControllerTestIT {
 
         @Nested
         class Name {
-            @Test
-            void validateNameNull(){
-
-                String name = null;
-
-                AddressRequest addressRequest = GenerateData.generateAddressRequest();
-
-                RestaurantRequest request = new RestaurantRequest(name, addressRequest);
-
-                ResponseEntity<String> response = createRestaurantPost(request);
-
-                DocumentContext documentContext = JsonPath.parse(response.getBody());
-
-                String error = documentContext.read("$.errors");
-
-                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-
-                assertThat(error).contains("name: O campo deve estar preenchido");
-            }
-
-            @Test
-            void validateNameEmpty(){
-
-                String name = "";
+            @ParameterizedTest
+            @ValueSource(strings = {""})
+            @NullSource
+            void validateNameErrorNullEmpty(String name){
 
                 AddressRequest addressRequest = GenerateData.generateAddressRequest();
 
@@ -88,6 +71,7 @@ public class RestaurantControllerTestIT {
 
                 assertThat(error).contains("name: O campo deve estar preenchido");
             }
+
 
             @Test
             void validateNameLessMinimum(){

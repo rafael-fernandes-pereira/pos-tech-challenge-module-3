@@ -7,9 +7,11 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CreateRestaurantCommandTest {
@@ -17,10 +19,9 @@ public class CreateRestaurantCommandTest {
     @Nested
     class Name {
 
-        @Test
-        void validateSucessName(){
-
-            String name = "Rafael Fernandes Pereira";
+        @ParameterizedTest
+        @ValueSource(strings = {"Rafael Fernandes Pereira", "Dio", "Gabriela Carolina da Silva Santos Pereira Oliveira Martins Rodrigues Barbosa Almeida Costa Ferreira"})
+        void validateSucessName(String name){
 
             CreateRestaurantCommand command = new CreateRestaurantCommand(name, GenerateData.generateAddressCommand());
 
@@ -31,8 +32,10 @@ public class CreateRestaurantCommandTest {
         @Test
         void validateNullName(){
 
-            assertThatThrownBy(() -> {
-                new CreateRestaurantCommand(null, GenerateData.generateAddressCommand());
+            CreateRestaurantAddressCommand addressCommand = GenerateData.generateAddressCommand();
+
+            assertThatCode(() -> {
+                new CreateRestaurantCommand(null, addressCommand);
             })
                     .isInstanceOf(ConstraintViolationException.class)
                     .hasMessage("name: O campo deve estar preenchido");
@@ -44,8 +47,10 @@ public class CreateRestaurantCommandTest {
 
             String name = "";
 
-            assertThatThrownBy(() -> {
-                new CreateRestaurantCommand(name, GenerateData.generateAddressCommand());
+            CreateRestaurantAddressCommand addressCommand = GenerateData.generateAddressCommand();
+
+            assertThatCode(() -> {
+                new CreateRestaurantCommand(name, addressCommand);
             })
                     .isInstanceOf(ConstraintViolationException.class)
                     .hasMessageContainingAll("name: O campo deve estar preenchido", "name: O campo deve ter no minimo 3 e no maximo 100 caracteres");
@@ -57,22 +62,13 @@ public class CreateRestaurantCommandTest {
 
             String name = "Ra";
 
-            assertThatThrownBy(() -> {
-                new CreateRestaurantCommand(name, GenerateData.generateAddressCommand());
+            CreateRestaurantAddressCommand addressCommand = GenerateData.generateAddressCommand();
+
+            assertThatCode(() -> {
+                new CreateRestaurantCommand(name, addressCommand);
             })
                     .isInstanceOf(ConstraintViolationException.class)
                     .hasMessage("name: O campo deve ter no minimo 3 e no maximo 100 caracteres");
-
-        }
-
-        @Test
-        void validateMinimumNameSucess(){
-
-            String name = "Dio"; // 10 Caracteres
-
-            CreateRestaurantCommand command = new CreateRestaurantCommand(name, GenerateData.generateAddressCommand());
-
-            assertEquals(name, command.name());
 
         }
 
@@ -81,22 +77,13 @@ public class CreateRestaurantCommandTest {
 
             String name = "Esmeralda Carolina da Silva Santos Pereira Oliveira Martins Rodrigues Barbosa Almeida Costa Ferreira Gomes Souza Lima Freitas Lima Pereira Oliveira Martins Rodrigues Barbosa Almeida Costa Ferreira Gomes Souza Lima Freitas Lima Pereira Oliveira Martins Rodrigues Barbosa Almeida"; // 8 caracteres
 
-            assertThatThrownBy(() -> {
-                new CreateRestaurantCommand(name, GenerateData.generateAddressCommand());
+            CreateRestaurantAddressCommand addressCommand = GenerateData.generateAddressCommand();
+
+            assertThatCode(() -> {
+                new CreateRestaurantCommand(name, addressCommand);
             })
                     .isInstanceOf(ConstraintViolationException.class)
                     .hasMessage("name: O campo deve ter no minimo 3 e no maximo 100 caracteres");
-
-        }
-
-        @Test
-        void validateMaximumNameSucess(){
-
-            String name = "Gabriela Carolina da Silva Santos Pereira Oliveira Martins Rodrigues Barbosa Almeida Costa Ferreira"; // 100 caracteres
-
-            CreateRestaurantCommand command = new CreateRestaurantCommand(name, GenerateData.generateAddressCommand());
-
-            assertEquals(name, command.name());
 
         }
 
@@ -317,28 +304,10 @@ public class CreateRestaurantCommandTest {
         @Nested
         class AddittionalDetails {
 
-            @Test
-            void validateAddittionalDetailsNull(){
-
-                String addittionalDetails = null;
-
-                CreateRestaurantAddressCommand command = new CreateRestaurantAddressCommand(
-                        street,
-                        number,
-                        addittionalDetails,
-                        neighborhood,
-                        city,
-                        state
-                );
-
-                assertThat(command).isNotNull();
-
-            }
-
-            @Test
-            void validateAddittionalDetailsEmpty(){
-
-                String addittionalDetails = "";
+            @ParameterizedTest
+            @ValueSource(strings = {"", "Esmeralda Carolina da Silva Santos Pereira Oliveira Martins Rodrigues Barbosa Almeida Costa Ferreira Gomes Souza Lima Freitas Lima Pereira Oliveira M"})
+            @NullSource
+            void validateAddittionalDetailsSuceess(String addittionalDetails){
 
                 CreateRestaurantAddressCommand command = new CreateRestaurantAddressCommand(
                         street,
@@ -371,24 +340,6 @@ public class CreateRestaurantCommandTest {
                         .isInstanceOf(ConstraintViolationException.class)
                         .hasMessage("addittionalDetails: O campo deve ter no máximo 150 caracteres");
 
-
-            }
-
-            @Test
-            void validateMaximumAddittionalDetails(){
-
-                String addittionalDetails = "Esmeralda Carolina da Silva Santos Pereira Oliveira Martins Rodrigues Barbosa Almeida Costa Ferreira Gomes Souza Lima Freitas Lima Pereira Oliveira M";
-
-                CreateRestaurantAddressCommand command = new CreateRestaurantAddressCommand(
-                        street,
-                        number,
-                        addittionalDetails,
-                        neighborhood,
-                        city,
-                        state
-                );
-
-                assertThat(command).isNotNull();
 
             }
 

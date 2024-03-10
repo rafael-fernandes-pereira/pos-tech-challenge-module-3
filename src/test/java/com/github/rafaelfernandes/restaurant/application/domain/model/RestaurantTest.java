@@ -2,7 +2,7 @@ package com.github.rafaelfernandes.restaurant.application.domain.model;
 
 import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
-import com.github.rafaelfernandes.restaurant.util.GenerateData;
+import util.GenerateData;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

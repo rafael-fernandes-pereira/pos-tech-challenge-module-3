@@ -4,7 +4,7 @@ import com.github.rafaelfernandes.restaurant.adapter.in.web.request.AddressReque
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
 import com.github.rafaelfernandes.restaurant.adapter.out.persistence.RestaurantRepository;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
-import com.github.rafaelfernandes.restaurant.util.GenerateData;
+import util.GenerateData;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.AfterEach;

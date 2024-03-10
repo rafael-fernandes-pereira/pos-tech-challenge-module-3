@@ -1,9 +1,9 @@
-package com.github.rafaelfernandes.restaurant.bdd;
+package bdd;
 
 
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.AddressRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
-import com.github.rafaelfernandes.restaurant.util.GenerateData;
+import util.GenerateData;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;

@@ -1,9 +1,7 @@
 package com.github.rafaelfernandes.restaurant.application.port.in;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
-import com.github.rafaelfernandes.restaurant.util.GenerateData;
-import jakarta.validation.ConstraintViolation;
+import util.GenerateData;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.github.rafaelfernandes.restaurant.util;
+package util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.AddressRequest;

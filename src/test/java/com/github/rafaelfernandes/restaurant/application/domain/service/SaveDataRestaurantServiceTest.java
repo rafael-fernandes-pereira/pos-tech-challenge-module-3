@@ -2,15 +2,10 @@ package com.github.rafaelfernandes.restaurant.application.domain.service;
 
 
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
-import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantCommand;
 import com.github.rafaelfernandes.restaurant.application.port.out.CreateRestaurantPort;
 import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicateException;
-import com.github.rafaelfernandes.restaurant.util.GenerateData;
-import jakarta.validation.ConstraintViolationException;
-import org.junit.jupiter.api.BeforeEach;
+import util.GenerateData;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.UUID;

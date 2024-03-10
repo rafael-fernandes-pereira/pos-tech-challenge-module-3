@@ -1,9 +1,7 @@
 package com.github.rafaelfernandes.restaurant.adapter.out.persistence;
 
-import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantCommand;
 import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicateException;
-import com.github.rafaelfernandes.restaurant.util.GenerateData;
-import jakarta.validation.ConstraintViolationException;
+import util.GenerateData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,7 +11,6 @@ import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import({RestaurantPersistenceAdapter.class, RestaurantMapper.class})

@@ -1,12 +1,11 @@
 package com.github.rafaelfernandes.restaurant.adapter.in.web;
 
-import com.github.rafaelfernandes.restaurant.adapter.in.web.request.AddressRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantCommand;
 import com.github.rafaelfernandes.restaurant.application.port.in.SaveDataRestaurantUseCase;
 import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicateException;
-import com.github.rafaelfernandes.restaurant.util.GenerateData;
+import util.GenerateData;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

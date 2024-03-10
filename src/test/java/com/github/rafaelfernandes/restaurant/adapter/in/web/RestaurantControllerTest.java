@@ -68,7 +68,7 @@ class RestaurantControllerTest {
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .content(GenerateData.asJsonString(restaurant))
                     )
-                    .andExpect(status().isBadRequest())
+                    .andExpect(status().isConflict())
                     .andExpect(jsonPath("$.errors").value("Nome já cadastrado!"))
             ;
 

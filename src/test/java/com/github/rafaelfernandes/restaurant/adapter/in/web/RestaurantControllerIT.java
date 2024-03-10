@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class RestaurantControllerTestIT {
+public class RestaurantControllerIT {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -47,6 +47,30 @@ public class RestaurantControllerTestIT {
             ResponseEntity<String> response = createRestaurantPost(request);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        }
+
+        @Test
+        void duplicateNameError(){
+
+            AddressRequest addressRequest = GenerateData.generateAddressRequest();
+            String name = "COMIDA BOA";
+
+            RestaurantRequest request = new RestaurantRequest(name, addressRequest);
+
+            ResponseEntity<String> response = createRestaurantPost(request);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+            ResponseEntity<String> responseDuplicate = createRestaurantPost(request);
+
+            assertThat(responseDuplicate.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+
+            DocumentContext documentContext = JsonPath.parse(responseDuplicate.getBody());
+
+            String error = documentContext.read("$.errors");
+
+            assertThat(error).contains("Nome já cadastrado!");
 
         }
 

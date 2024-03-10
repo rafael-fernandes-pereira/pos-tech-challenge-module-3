@@ -21,7 +21,7 @@ public class RestaurantExceptionHandler {
     @ExceptionHandler({RestaurantDuplicateException.class})
     public ResponseEntity<RestaurantError> restaurantErrorValidation(RestaurantDuplicateException exception){
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.CONFLICT)
                 .body(new RestaurantError(exception.getMessage()));
     }
 

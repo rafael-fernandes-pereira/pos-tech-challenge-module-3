@@ -19,6 +19,9 @@ unit-test:
 integration-test:
 	@./mvnw test -P integration-test
 
+performance-test:
+	@./mvnw gatling:test -Pperformance-test
+
 test: unit-test integration-test
 
 report-allure: unit-test

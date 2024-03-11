@@ -12,6 +12,8 @@ import net.datafaker.Faker;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class GenerateData {
 
@@ -88,6 +90,32 @@ public class GenerateData {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Iterator<Map<String, Object>> generatePerformanceRequest(){
+
+
+
+        return
+                Stream.generate((Supplier<Map<String, Object>>) () -> {
+
+                    var request = new HashMap<String, Object>();
+
+                    request.put("address_street", faker.address().streetAddress());
+                    request.put("address_number", Integer.valueOf(faker.address().streetAddressNumber()));
+                    request.put("address_addittionalDetails", faker.address().secondaryAddress());
+                    request.put("address_neighborhood", faker.name().lastName());
+                    request.put("address_city", faker.address().city());
+                    request.put("address_state", faker.address().stateAbbr());
+
+                    request.put("name", faker.restaurant().name());
+
+
+                    return request;
+
+                        }
+                ).iterator();
+
     }
 
 

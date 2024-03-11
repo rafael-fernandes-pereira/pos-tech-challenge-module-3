@@ -36,3 +36,10 @@ jobs:
           dockerfile: Dockerfile
           username: ${{ secrets.DOCKER_HUB_LOGIN }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Activate Update Render
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.RENDER_SRV }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
+          wait-for-success: true

@@ -3,7 +3,7 @@ version: '3'
 services:
   restaurant:
     build:
-      dockerfile: infrastructure/restaurant.Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     network_mode: host

@@ -3,6 +3,7 @@ package bdd;
 
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.AddressRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
+import io.restassured.http.ContentType;
 import util.GenerateData;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Suite
@@ -54,9 +56,6 @@ public class RestaurantCreate {
     public void successRestaurant(){
         response.then()
                 .statusCode(HttpStatus.CREATED.value());
-
-        // TODO: voltar aqui quando tiver o método GET
-
     }
 
     @When("a request is made to create a restaurant with missing required information")
@@ -142,6 +141,26 @@ public class RestaurantCreate {
 
         var error = response.getBody().asString();
         assertThat(error).contains("Nome já cadastrado!");
+
+    }
+
+    @And("the new restaurant should be persisted in the database")
+    public void theNewRestaurantShouldBePersistedInTheDatabase() {
+
+        var location = response.getHeader("Location");
+        response = given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get(location);
+
+        response.then().statusCode(HttpStatus.OK.value());
+
+    }
+
+    @And("the response should contain the details of the created restaurant")
+    public void theResponseShouldContainTheDetailsOfTheCreatedRestaurant() {
+
+
 
     }
 }

@@ -36,8 +36,7 @@ public class AddressJpaEntity {
     @Column(name = "state")
     private String state;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "restaurant_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "address")
     private RestaurantJpaEntity restaurant;
 
 }

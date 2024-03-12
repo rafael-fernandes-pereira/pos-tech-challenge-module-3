@@ -2,6 +2,7 @@ package com.github.rafaelfernandes.restaurant.adapter.in.web;
 
 import com.github.rafaelfernandes.restaurant.adapter.in.web.response.RestaurantError;
 import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicateException;
+import com.github.rafaelfernandes.restaurant.common.exception.RestaurantNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,13 @@ public class RestaurantExceptionHandler {
     public ResponseEntity<RestaurantError> restaurantErrorValidation(RestaurantDuplicateException exception){
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
+                .body(new RestaurantError(exception.getMessage()));
+    }
+
+    @ExceptionHandler({RestaurantNotFoundException.class})
+    public ResponseEntity<RestaurantError> restaurantErrorValidation(RestaurantNotFoundException exception){
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(new RestaurantError(exception.getMessage()));
     }
 

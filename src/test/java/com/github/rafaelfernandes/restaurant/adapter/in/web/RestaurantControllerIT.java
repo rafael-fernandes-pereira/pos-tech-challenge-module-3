@@ -4,6 +4,9 @@ import com.github.rafaelfernandes.restaurant.adapter.in.web.request.AddressReque
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
 import com.github.rafaelfernandes.restaurant.adapter.out.persistence.RestaurantRepository;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import util.GenerateData;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -19,6 +22,10 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.net.URI;
+import java.util.Collections;
+import java.util.HashMap;
+
 import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RestaurantControllerIT {
@@ -28,6 +35,16 @@ public class RestaurantControllerIT {
 
     @Autowired
     private RestaurantRepository restaurantRepository;
+
+    @BeforeEach
+    void setup(){
+        restTemplate.getRestTemplate().setInterceptors(
+                Collections.singletonList((request, body, execution) -> {
+                    request.getHeaders()
+                            .add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+                    return execution.execute(request, body);
+                }));
+    }
 
     @AfterEach
     void tearDown(){
@@ -40,13 +57,22 @@ public class RestaurantControllerIT {
         @Test
         void createSuccess(){
 
-            // TODO: voltar para colocar teste de validação do ID gerado (GET)
-
             RestaurantRequest request = GenerateData.gerenRestaurantRequest();
 
-            ResponseEntity<String> response = createRestaurantPost(request);
+            ResponseEntity<String> create = createRestaurantPost(request);
 
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+            assertThat(create.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+            URI location = create.getHeaders().getLocation();
+
+            ResponseEntity<String> response = restTemplate
+                    .getForEntity(
+                            location,
+                            String.class
+                    );
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
 
         }
 
@@ -720,6 +746,90 @@ public class RestaurantControllerIT {
 
 
 
+
+    }
+
+    @Nested
+    class FindById {
+
+        @Test
+        void validateCommandError() {
+
+            ResponseEntity<String> response = restTemplate
+                    .getForEntity(
+                    "/restaurants/uuid-invalid",
+                        String.class
+                    );
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+            DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+            String error = documentContext.read("$.errors");
+
+            assertThat(error).isEqualTo("restaurantId: O campo deve ser do tipo UUID");
+
+        }
+
+        @Test
+        void validateNotFound() {
+            ResponseEntity<String> response = restTemplate
+                    .getForEntity(
+                            "/restaurants/e903732e-9d20-4023-a71a-5c761253fc1c",
+                            String.class
+                    );
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+            DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+            String error = documentContext.read("$.errors");
+
+            assertThat(error).isEqualTo("Restaurante(s) não existe!");
+        }
+
+
+        @Test
+        void validateFound(){
+
+            var request = GenerateData.gerenRestaurantRequest();
+
+            ResponseEntity<String> create = createRestaurantPost(request);
+
+            URI location = create.getHeaders().getLocation();
+
+            ResponseEntity<String> response = restTemplate
+                    .getForEntity(
+                            location,
+                            String.class
+                    );
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+            DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+            String name = documentContext.read("$.name");
+            assertThat(name).isEqualTo(request.name());
+
+            String addressStreet = documentContext.read("$.address.street");
+            assertThat(addressStreet).isEqualTo(request.address().street());
+
+            Integer addressNumber = documentContext.read("$.address.number");
+            assertThat(addressNumber).isEqualTo(request.address().number());
+
+            String addressAddittionalDetails = documentContext.read("$.address.addittionalDetails");
+            assertThat(addressAddittionalDetails).isEqualTo(request.address().addittionalDetails());
+
+            String addressNeighborhood = documentContext.read("$.address.neighborhood");
+            assertThat(addressNeighborhood).isEqualTo(request.address().neighborhood());
+
+            String addressCity = documentContext.read("$.address.city");
+            assertThat(addressCity).isEqualTo(request.address().city());
+
+            String addressState = documentContext.read("$.address.state");
+            assertThat(addressState).isEqualTo(request.address().state());
+
+        }
 
     }
 

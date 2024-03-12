@@ -1,12 +1,15 @@
 package com.github.rafaelfernandes.restaurant.adapter.in.web;
 
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
-import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantAddressCommand;
-import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantCommand;
-import com.github.rafaelfernandes.restaurant.application.port.in.SaveDataRestaurantUseCase;
+import com.github.rafaelfernandes.restaurant.adapter.in.web.response.AddressResponse;
+import com.github.rafaelfernandes.restaurant.adapter.in.web.response.RestaurantError;
+import com.github.rafaelfernandes.restaurant.adapter.in.web.response.RestaurantResponse;
+import com.github.rafaelfernandes.restaurant.application.port.in.*;
 import com.github.rafaelfernandes.restaurant.common.annotations.WebAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,13 +18,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.UUID;
 
 @WebAdapter
 @RestController
@@ -31,6 +32,7 @@ import java.net.URI;
 public class RestaurantController {
 
     private final SaveDataRestaurantUseCase saveDataRestaurantUseCase;
+    private final GetRestaurantUseCase getRestaurantUseCase;
 
     @Operation(summary = "Create a Restaurant")
     @ApiResponses(value = {
@@ -69,6 +71,61 @@ public class RestaurantController {
                 .status(HttpStatus.CREATED)
                 .header(HttpHeaders.LOCATION, location.toASCIIString())
                 .build();
+
+    }
+
+    @Operation(summary = "Get a restaurant by ID")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    description = "Success", responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Bad request", responseCode = "400",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantError.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Not found", responseCode = "404",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantError.class)
+                    )
+            )
+    })
+    @GetMapping(path = "/{restaurantId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<RestaurantResponse> getById(@PathVariable final String restaurantId){
+
+        var command = new GetRestarauntDataCommand(restaurantId);
+
+        var restaurantData = getRestaurantUseCase.findBy(command);
+
+        var addressResponse = new AddressResponse(
+                restaurantData.get().getAddress().getStreet(),
+                restaurantData.get().getAddress().getNumber(),
+                restaurantData.get().getAddress().getAddittionalDetails(),
+                restaurantData.get().getAddress().getNeighborhood(),
+                restaurantData.get().getAddress().getCity(),
+                restaurantData.get().getAddress().getState().toString()
+        );
+
+        var response = new RestaurantResponse(
+                restaurantData.get().getRestaurantId().getValue(),
+                restaurantData.get().getName(),
+                addressResponse
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+
 
     }
 

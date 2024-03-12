@@ -1,5 +1,6 @@
 package com.github.rafaelfernandes.restaurant.adapter.out.persistence;
 
+import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicateException;
 import util.GenerateData;
 import org.junit.jupiter.api.AfterEach;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -21,6 +24,9 @@ class RestaurantPersistenceAdapterTest {
 
     @Autowired
     private RestaurantRepository restaurantRepository;
+
+    @Autowired
+    private RestaurantMapper restaurantMapper;
 
     @AfterEach
     void tearDown(){
@@ -40,9 +46,16 @@ class RestaurantPersistenceAdapterTest {
 
             var restaurantSaved = restaurantRepository.findById(restaurantId.getValue());
 
+            assertThat(restaurantSaved).isPresent();
             assertThat(restaurant.getName()).isEqualTo(restaurantSaved.get().getName());
             assertThat(restaurant.getTables()).isEqualTo(restaurantSaved.get().getTables());
             assertThat(restaurant.getAddress().getStreet()).isEqualTo(restaurantSaved.get().getAddress().getStreet());
+
+            var openingHours = restaurantMapper.toOpeningHoursModel(restaurantSaved.get().getOpeningHours());
+
+            assertThat(openingHours).isEqualTo(restaurant.getOpeningHours());
+
+
 
 
         }
@@ -58,6 +71,37 @@ class RestaurantPersistenceAdapterTest {
             })
                     .isInstanceOf(RestaurantDuplicateException.class)
                     .hasMessage("Nome já cadastrado!");
+
+        }
+
+    }
+
+    @Nested
+    class FindById {
+
+
+        @Test
+        void findSuccess(){
+
+            var restaurant = GenerateData.createRestaurant();
+            var restaurantId = restaurantPersistenceAdapter.create(restaurant);
+
+            var restaurantGet = restaurantPersistenceAdapter.findById(restaurantId.getValue());
+
+            assertThat(restaurantGet).isPresent();
+            assertThat(restaurantId).isEqualTo(restaurantGet.get().getRestaurantId());
+            assertThat(restaurant.getName()).isEqualTo(restaurantGet.get().getName());
+            assertThat(restaurant.getOpeningHours()).isEqualTo(restaurantGet.get().getOpeningHours());
+            assertThat(restaurant.getTables()).isEqualTo(restaurantGet.get().getTables());
+            assertThat(restaurant.getCuisines()).isEqualTo(restaurantGet.get().getCuisines());
+        }
+
+        @Test
+        void notFound(){
+
+            var restaurantGet = restaurantPersistenceAdapter.findById(UUID.fromString("0b02d081-b452-4edf-bc09-039bad8de53a"));
+
+            assertThat(restaurantGet).isEmpty();
 
         }
 

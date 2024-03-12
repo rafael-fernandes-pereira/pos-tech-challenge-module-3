@@ -35,7 +35,8 @@ public class RestaurantJpaEntity {
     @OneToMany(targetEntity = CuisineJpaEntity.class)
     private List<CuisineJpaEntity> cuisines;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "restaurant")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
     private AddressJpaEntity address;
 
 

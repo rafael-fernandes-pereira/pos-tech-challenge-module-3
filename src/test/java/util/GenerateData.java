@@ -6,6 +6,7 @@ import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRe
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantAddressCommand;
 import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantCommand;
+import com.github.rafaelfernandes.restaurant.application.port.in.GetRestarauntDataCommand;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
 import net.datafaker.Faker;
 
@@ -113,8 +114,14 @@ public class GenerateData {
 
                     return request;
 
-                        }
-                ).iterator();
+
+                }).iterator();
+
+    }
+
+    public static GetRestarauntDataCommand createGetRestarauntDataCommand(){
+
+        return new GetRestarauntDataCommand(UUID.randomUUID().toString());
 
     }
 

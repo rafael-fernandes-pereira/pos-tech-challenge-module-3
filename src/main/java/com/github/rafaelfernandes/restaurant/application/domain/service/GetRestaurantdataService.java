@@ -1,12 +1,14 @@
 package com.github.rafaelfernandes.restaurant.application.domain.service;
 
-import com.github.rafaelfernandes.restaurant.domain.Restaurant;
-import com.github.rafaelfernandes.restaurant.application.port.in.GetRestarauntDataCommand;
+import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.in.GetRestaurantUseCase;
 import com.github.rafaelfernandes.restaurant.application.port.out.GetRestaurantPort;
 import com.github.rafaelfernandes.restaurant.common.annotations.UseCase;
+import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
+import com.github.rafaelfernandes.restaurant.common.enums.OrderBy;
 import com.github.rafaelfernandes.restaurant.common.exception.RestaurantNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,11 +21,11 @@ public class GetRestaurantdataService implements GetRestaurantUseCase {
     private final GetRestaurantPort getRestaurantPort;
 
     @Override
-    public Optional<Restaurant> findBy(GetRestarauntDataCommand getRestarauntDataCommand) {
+    public Optional<Restaurant> findById(Restaurant.RestaurantId restaurantId) {
 
-        if (Optional.ofNullable(getRestarauntDataCommand.getRestaurantId()).isPresent()){
+        if (StringUtils.hasText(restaurantId.id())){
 
-            var restarauntId = UUID.fromString(getRestarauntDataCommand.getRestaurantId());
+            var restarauntId = UUID.fromString(restaurantId.id());
 
             var restaurant = getRestaurantPort.findById(restarauntId);
 
@@ -38,15 +40,15 @@ public class GetRestaurantdataService implements GetRestaurantUseCase {
     }
 
     @Override
-    public List<Restaurant> findAlldBy(GetRestarauntDataCommand getRestarauntDataCommand) {
+    public List<Restaurant> findAllBy(String name, String location, List<Cuisine> cuisines, Integer page, Integer quantity, OrderBy orderBy) {
 
         var restaurants = getRestaurantPort.findAllBy(
-                getRestarauntDataCommand.getName(),
-                getRestarauntDataCommand.getLocation(),
-                getRestarauntDataCommand.getCuisines(),
-                getRestarauntDataCommand.getPage(),
-                getRestarauntDataCommand.getQuantity(),
-                getRestarauntDataCommand.getOrderBy());
+                name,
+                location,
+                cuisines,
+                page,
+                page,
+                orderBy);
 
         if (restaurants.isEmpty())  throw new RestaurantNotFoundException();
 

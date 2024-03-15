@@ -1,6 +1,8 @@
 package com.github.rafaelfernandes.restaurant.application.port.out;
 
-import com.github.rafaelfernandes.restaurant.domain.Restaurant;
+import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
+import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
+import com.github.rafaelfernandes.restaurant.common.enums.OrderBy;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,9 +14,9 @@ public interface GetRestaurantPort {
 
     List<Restaurant> findAllBy(String name,
                                String location,
-                               List<String> cuisines,
+                               List<Cuisine> cuisines,
                                Integer page,
                                Integer quantity,
-                               String orderBy);
+                               OrderBy orderBy);
 
 }

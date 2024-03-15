@@ -1,9 +1,11 @@
 package com.github.rafaelfernandes.restaurant.adapter.out.persistence;
 
-import com.github.rafaelfernandes.restaurant.domain.Restaurant;
+import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.out.CreateRestaurantPort;
 import com.github.rafaelfernandes.restaurant.application.port.out.GetRestaurantPort;
 import com.github.rafaelfernandes.restaurant.common.annotations.PersistenceAdapter;
+import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
+import com.github.rafaelfernandes.restaurant.common.enums.OrderBy;
 import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicateException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,7 @@ public class RestaurantPersistenceAdapter implements CreateRestaurantPort, GetRe
 
         var restautarantSaved = restaurantRepository.save(restaurantToSave);
 
-        return new Restaurant.RestaurantId(restautarantSaved.getId());
+        return new Restaurant.RestaurantId(restautarantSaved.getId().toString());
 
     }
 
@@ -47,7 +49,7 @@ public class RestaurantPersistenceAdapter implements CreateRestaurantPort, GetRe
     }
 
     @Override
-    public List<Restaurant> findAllBy(String name, String location, List<String> cuisines, Integer page, Integer quantity, String orderBy) {
+    public List<Restaurant> findAllBy(String name, String location, List<Cuisine> cuisines, Integer page, Integer quantity, OrderBy orderBy) {
         return null;
     }
 }

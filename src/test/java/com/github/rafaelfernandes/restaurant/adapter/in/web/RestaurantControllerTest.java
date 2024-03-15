@@ -1,8 +1,7 @@
 package com.github.rafaelfernandes.restaurant.adapter.in.web;
 
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
-import com.github.rafaelfernandes.restaurant.domain.Restaurant;
-import com.github.rafaelfernandes.restaurant.application.port.in.GetRestarauntDataCommand;
+import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.in.GetRestaurantUseCase;
 import com.github.rafaelfernandes.restaurant.application.port.in.SaveDataRestaurantUseCase;
 import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicateException;
@@ -83,7 +82,7 @@ class RestaurantControllerTest {
 
             var restaurant = GenerateData.gerenRestaurantRequest();
 
-            var restaurantId = new Restaurant.RestaurantId(UUID.randomUUID());
+            var restaurantId = new Restaurant.RestaurantId(UUID.randomUUID().toString());
 
             when(saveDataRestaurantUseCase.create(any(Restaurant.class)))
                     .thenReturn(restaurantId);
@@ -94,7 +93,7 @@ class RestaurantControllerTest {
                                     .content(GenerateData.asJsonString(restaurant))
                     )
                     .andExpect(status().isCreated())
-                    .andExpect(header().string("Location", containsString("/restaurants/"+restaurantId.getValue().toString())));
+                    .andExpect(header().string("Location", containsString("/restaurants/"+restaurantId.id())));
 
             ;
 
@@ -111,14 +110,14 @@ class RestaurantControllerTest {
                                     .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.errors").value("restaurantId: O campo deve ser do tipo UUID"))
+                    .andExpect(jsonPath("$.errors").value("id: O campo deve ser do tipo UUID"))
             ;
         }
 
         @Test
         void validateNotFound() throws Exception {
 
-            when(getRestaurantUseCase.findBy(any(GetRestarauntDataCommand.class)))
+            when(getRestaurantUseCase.findById(any(Restaurant.RestaurantId.class)))
                     .thenThrow(RestaurantNotFoundException.class);
 
             mockMvc.perform(
@@ -135,7 +134,7 @@ class RestaurantControllerTest {
 
             var restaurant = Optional.of(GenerateData.createRestaurant());
 
-            when(getRestaurantUseCase.findBy(any(GetRestarauntDataCommand.class)))
+            when(getRestaurantUseCase.findById(any(Restaurant.RestaurantId.class)))
                     .thenReturn(restaurant);
 
             mockMvc.perform(
@@ -143,7 +142,7 @@ class RestaurantControllerTest {
                                     .contentType(MediaType.APPLICATION_JSON)
                     )
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").value(restaurant.get().getRestaurantId().getValue().toString()))
+                    .andExpect(jsonPath("$.id").value(restaurant.get().getRestaurantId().id().toString()))
                     .andExpect(jsonPath("$.name").value(restaurant.get().getName()))
                     .andExpect(jsonPath("$.address.street").value(restaurant.get().getAddress().getStreet()))
                     .andExpect(jsonPath("$.address.number").value(restaurant.get().getAddress().getNumber()))

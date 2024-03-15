@@ -6,7 +6,7 @@ import com.github.rafaelfernandes.restaurant.adapter.in.web.response.RestaurantE
 import com.github.rafaelfernandes.restaurant.adapter.in.web.response.RestaurantResponse;
 import com.github.rafaelfernandes.restaurant.application.port.in.*;
 import com.github.rafaelfernandes.restaurant.common.annotations.WebAdapter;
-import com.github.rafaelfernandes.restaurant.domain.Restaurant;
+import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.UUID;
 
 @WebAdapter
 @RestController
@@ -63,7 +64,7 @@ public class RestaurantController {
 
         URI location = uriComponentsBuilder
                 .path("restaurants/{id}")
-                .buildAndExpand(retaurantId.getValue())
+                .buildAndExpand(retaurantId.id())
                 .toUri();
 
         return ResponseEntity
@@ -102,9 +103,9 @@ public class RestaurantController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<RestaurantResponse> getById(@PathVariable final String restaurantId){
 
-        var command = new GetRestarauntDataCommand(restaurantId);
+        var restaurantIdModel = new Restaurant.RestaurantId(restaurantId);
 
-        var restaurantData = getRestaurantUseCase.findBy(command);
+        var restaurantData = getRestaurantUseCase.findById(restaurantIdModel);
 
         var addressResponse = new AddressResponse(
                 restaurantData.get().getAddress().getStreet(),
@@ -112,11 +113,11 @@ public class RestaurantController {
                 restaurantData.get().getAddress().getAddittionalDetails(),
                 restaurantData.get().getAddress().getNeighborhood(),
                 restaurantData.get().getAddress().getCity(),
-                restaurantData.get().getAddress().getState().toString()
+                restaurantData.get().getAddress().getState()
         );
 
         var response = new RestaurantResponse(
-                restaurantData.get().getRestaurantId().getValue(),
+                UUID.fromString(restaurantData.get().getRestaurantId().id()),
                 restaurantData.get().getName(),
                 addressResponse
         );

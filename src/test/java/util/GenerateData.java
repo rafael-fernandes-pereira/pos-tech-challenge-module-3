@@ -3,9 +3,8 @@ package util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.AddressRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
-import com.github.rafaelfernandes.restaurant.domain.Restaurant;
+import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.in.GetRestarauntDataCommand;
-import com.github.rafaelfernandes.restaurant.common.enums.State;
 import net.datafaker.Faker;
 
 import java.time.DayOfWeek;
@@ -99,12 +98,5 @@ public class GenerateData {
                 }).iterator();
 
     }
-
-    public static GetRestarauntDataCommand createGetRestarauntDataCommandId(){
-
-        return new GetRestarauntDataCommand(UUID.randomUUID().toString());
-
-    }
-
 
 }

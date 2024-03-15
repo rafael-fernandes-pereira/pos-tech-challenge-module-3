@@ -1,4 +1,4 @@
-package com.github.rafaelfernandes.restaurant.domain;
+package com.github.rafaelfernandes.restaurant.application.domain.model;
 
 import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
@@ -44,23 +44,28 @@ public class Restaurant {
 
     private Boolean stateChange;
 
-    @Value
-    public static class RestaurantId {
-        UUID value;
+    public record RestaurantId(
+            @org.hibernate.validator.constraints.UUID(message = "O campo deve ser do tipo UUID")
+            String id
+    ) {
+        public RestaurantId(String id){
+            this.id = id;
+            validate(this);
+        }
     }
 
     @Value
     public static class Address {
 
         @NotEmpty(message = "O campo deve estar preenchido")
-        @Length( min = 10, max = 150, message = "O campo deve ter no minimo 10 e no maximo 150 caracteres")
+        @Length( min = 10, max = 150, message = "O campo deve ter no minimo {min} e no maximo {max} caracteres")
         String street;
 
         @NotNull(message = "O campo deve estar preenchido")
         @Positive(message = "O campo deve ser maior que zero (0)")
         Integer number;
 
-        @Length( max = 150, message = "O campo deve ter no máximo 150 caracteres")
+        @Length( max = 150, message = "O campo deve ter no máximo {max} caracteres")
         String addittionalDetails;
 
         @NotEmpty(message = "O campo deve estar preenchido")
@@ -99,7 +104,7 @@ public class Restaurant {
 
         validate(this);
 
-        this.restaurantId = new RestaurantId(UUID.randomUUID());
+        this.restaurantId = new RestaurantId(UUID.randomUUID().toString());
         this.register = LocalDateTime.now();
 
         this.openingHours = new ArrayList<>();
@@ -117,7 +122,7 @@ public class Restaurant {
     }
 
 
-    public static Restaurant of(UUID restaurantId, String name, Address address, LocalDateTime register, List<OpeningHour> openingHours, Integer numberOfTables, List<Cuisine> cuisines){
+    public static Restaurant of(String restaurantId, String name, Address address, LocalDateTime register, List<OpeningHour> openingHours, Integer numberOfTables, List<Cuisine> cuisines){
         return new Restaurant(new RestaurantId(restaurantId), name, address, register, openingHours, numberOfTables, cuisines, Boolean.FALSE);
     }
 

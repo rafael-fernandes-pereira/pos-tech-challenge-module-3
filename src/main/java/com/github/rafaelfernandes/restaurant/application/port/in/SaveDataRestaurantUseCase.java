@@ -1,6 +1,6 @@
 package com.github.rafaelfernandes.restaurant.application.port.in;
 
-import com.github.rafaelfernandes.restaurant.domain.Restaurant;
+import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 
 public interface SaveDataRestaurantUseCase {
 

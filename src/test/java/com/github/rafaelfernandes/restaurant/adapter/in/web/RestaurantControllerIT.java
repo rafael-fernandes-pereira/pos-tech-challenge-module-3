@@ -767,7 +767,7 @@ public class RestaurantControllerIT {
 
             String error = documentContext.read("$.errors");
 
-            assertThat(error).isEqualTo("restaurantId: O campo deve ser do tipo UUID");
+            assertThat(error).isEqualTo("id: O campo deve ser do tipo UUID");
 
         }
 

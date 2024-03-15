@@ -43,7 +43,9 @@ class RestaurantPersistenceAdapterTest {
 
             assertThat(restaurant.getRestaurantId()).isEqualTo(restaurantId);
 
-            var restaurantSaved = restaurantRepository.findById(restaurantId.getValue());
+            var restaurantIdUUID = UUID.fromString(restaurantId.id());
+
+            var restaurantSaved = restaurantRepository.findById(restaurantIdUUID);
 
             assertThat(restaurantSaved).isPresent();
             assertThat(restaurant.getName()).isEqualTo(restaurantSaved.get().getName());
@@ -85,7 +87,9 @@ class RestaurantPersistenceAdapterTest {
             var restaurant = GenerateData.createRestaurant();
             var restaurantId = restaurantPersistenceAdapter.create(restaurant);
 
-            var restaurantGet = restaurantPersistenceAdapter.findById(restaurantId.getValue());
+            var restaurantIdUUID = UUID.fromString(restaurantId.id());
+
+            var restaurantGet = restaurantPersistenceAdapter.findById(restaurantIdUUID);
 
             assertThat(restaurantGet).isPresent();
             assertThat(restaurantId).isEqualTo(restaurantGet.get().getRestaurantId());

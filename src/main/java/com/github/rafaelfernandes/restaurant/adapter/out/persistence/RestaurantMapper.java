@@ -1,13 +1,13 @@
 package com.github.rafaelfernandes.restaurant.adapter.out.persistence;
 
-import com.github.rafaelfernandes.restaurant.domain.Restaurant;
+import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
-import com.github.rafaelfernandes.restaurant.common.enums.State;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 class RestaurantMapper {
@@ -15,7 +15,7 @@ class RestaurantMapper {
     RestaurantJpaEntity toCreateEntity(Restaurant restaurant){
 
         var restaurantEntity = new RestaurantJpaEntity();
-        restaurantEntity.setId(restaurant.getRestaurantId().getValue());
+        restaurantEntity.setId(UUID.fromString(restaurant.getRestaurantId().id()));
         restaurantEntity.setName(restaurant.getName());
         restaurantEntity.setRegister(restaurant.getRegister());
         restaurantEntity.setTables(restaurant.getTables());
@@ -71,7 +71,7 @@ class RestaurantMapper {
 
 
         return Restaurant.of(
-                restaurantJpaEntity.getId(),
+                restaurantJpaEntity.getId().toString(),
                 restaurantJpaEntity.getName(),
                 address,
                 restaurantJpaEntity.getRegister(),

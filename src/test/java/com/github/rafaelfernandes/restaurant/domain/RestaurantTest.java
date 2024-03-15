@@ -1,8 +1,7 @@
 package com.github.rafaelfernandes.restaurant.domain;
 
 import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
-import com.github.rafaelfernandes.restaurant.common.enums.State;
-import com.github.rafaelfernandes.restaurant.domain.Restaurant;
+import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -142,7 +141,7 @@ public class RestaurantTest {
 
         @Test
         void createRestaurantUsingOf() {
-            UUID restaurantId = UUID.randomUUID();
+            String restaurantId = UUID.randomUUID().toString();
             String name = "Test Restaurant";
             Restaurant.Address address = new Restaurant.Address(
                     faker.address().streetAddress(),
@@ -158,7 +157,7 @@ public class RestaurantTest {
             Restaurant restaurant = Restaurant.of(restaurantId, name, address, register, openingHours, numberOfTables, null);
 
             assertNotNull(restaurant);
-            assertEquals(restaurantId, restaurant.getRestaurantId().getValue());
+            assertEquals(restaurantId, restaurant.getRestaurantId().id());
             assertEquals(name, restaurant.getName());
             assertEquals(address, restaurant.getAddress());
             assertEquals(register, restaurant.getRegister());
@@ -168,7 +167,7 @@ public class RestaurantTest {
 
         @Test
         void createRestaurantWithNullOpeningHours() {
-            UUID restaurantId = UUID.randomUUID();
+            String restaurantId = UUID.randomUUID().toString();
             String name = "Test Restaurant";
             Restaurant.Address address = new Restaurant.Address(
                     faker.address().streetAddress(),
@@ -183,7 +182,7 @@ public class RestaurantTest {
             Restaurant restaurant = Restaurant.of(restaurantId, name, address, register, null, numberOfTables, null);
 
             assertNotNull(restaurant);
-            assertEquals(restaurantId, restaurant.getRestaurantId().getValue());
+            assertEquals(restaurantId, restaurant.getRestaurantId().id());
             assertEquals(name, restaurant.getName());
             assertEquals(address, restaurant.getAddress());
             assertEquals(register, restaurant.getRegister());
@@ -342,7 +341,7 @@ public class RestaurantTest {
             var isAdd = this.restaurant.addCuisine(cuisine);
 
             Restaurant restaurantCopy = Restaurant.of(
-                    this.restaurant.getRestaurantId().getValue(),
+                    this.restaurant.getRestaurantId().id(),
                     this.restaurant.getName(),
                     this.restaurant.getAddress(),
                     this.restaurant.getRegister(),
@@ -368,7 +367,7 @@ public class RestaurantTest {
             var isAdd = this.restaurant.addCuisine(cuisine);
 
             Restaurant restaurantCopy = Restaurant.of(
-                    this.restaurant.getRestaurantId().getValue(),
+                    this.restaurant.getRestaurantId().id(),
                     this.restaurant.getName(),
                     this.restaurant.getAddress(),
                     this.restaurant.getRegister(),

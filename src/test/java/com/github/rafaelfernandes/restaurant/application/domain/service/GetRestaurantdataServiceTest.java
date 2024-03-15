@@ -4,9 +4,6 @@ import com.github.rafaelfernandes.restaurant.application.port.in.GetRestarauntDa
 import com.github.rafaelfernandes.restaurant.application.port.out.GetRestaurantPort;
 import com.github.rafaelfernandes.restaurant.common.exception.RestaurantNotFoundException;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import util.GenerateData;
 
@@ -15,7 +12,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -30,7 +26,7 @@ class GetRestaurantdataServiceTest {
     @Test
     void validateSuccess() {
 
-        var command = GenerateData.createGetRestarauntDataCommand();
+        var command = GenerateData.createGetRestarauntDataCommandId();
 
         var restaurant = GenerateData.createRestaurant();
 
@@ -52,7 +48,7 @@ class GetRestaurantdataServiceTest {
     @Test
     void validateEmptyResult(){
 
-        var command = GenerateData.createGetRestarauntDataCommand();
+        var command = GenerateData.createGetRestarauntDataCommandId();
 
         when(getRestaurantPort.findById(any(UUID.class)))
                 .thenReturn(Optional.empty());

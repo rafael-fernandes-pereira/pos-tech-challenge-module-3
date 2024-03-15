@@ -8,7 +8,6 @@ Feature: Restaurant Create
     When a request is made to create a restaurant with valid details
     Then the system should respond with a success status code
     And the new restaurant should be persisted in the database
-    And the response should contain the details of the created restaurant
 
   Scenario: Attempt to create a restaurant with missing information
     Given the system is ready to create a new restaurant

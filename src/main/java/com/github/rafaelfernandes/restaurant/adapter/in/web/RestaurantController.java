@@ -6,6 +6,7 @@ import com.github.rafaelfernandes.restaurant.adapter.in.web.response.RestaurantE
 import com.github.rafaelfernandes.restaurant.adapter.in.web.response.RestaurantResponse;
 import com.github.rafaelfernandes.restaurant.application.port.in.*;
 import com.github.rafaelfernandes.restaurant.common.annotations.WebAdapter;
+import com.github.rafaelfernandes.restaurant.domain.Restaurant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.UUID;
 
 @WebAdapter
 @RestController
@@ -46,7 +46,7 @@ public class RestaurantController {
     ResponseEntity<Void> create(
             @RequestBody final RestaurantRequest request, UriComponentsBuilder uriComponentsBuilder) {
 
-        var addressCommand = new CreateRestaurantAddressCommand(
+        var addressModel = new Restaurant.Address(
                 request.address().street(),
                 request.address().number(),
                 request.address().addittionalDetails(),
@@ -55,12 +55,11 @@ public class RestaurantController {
                 request.address().state()
         );
 
-        var command = new CreateRestaurantCommand(
-                request.name(),
-                addressCommand
+        var restaurantModel = new Restaurant(
+                request.name(), addressModel
         );
 
-        var retaurantId = this.saveDataRestaurantUseCase.create(command);
+        var retaurantId = this.saveDataRestaurantUseCase.create(restaurantModel);
 
         URI location = uriComponentsBuilder
                 .path("restaurants/{id}")

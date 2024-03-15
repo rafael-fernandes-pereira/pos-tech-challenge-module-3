@@ -1,6 +1,6 @@
 package com.github.rafaelfernandes.restaurant.adapter.out.persistence;
 
-import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
+import com.github.rafaelfernandes.restaurant.domain.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.out.CreateRestaurantPort;
 import com.github.rafaelfernandes.restaurant.application.port.out.GetRestaurantPort;
 import com.github.rafaelfernandes.restaurant.common.annotations.PersistenceAdapter;
@@ -8,6 +8,7 @@ import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicat
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,5 +44,10 @@ public class RestaurantPersistenceAdapter implements CreateRestaurantPort, GetRe
         var restaraunt = restaurantMapper.toModel(restaurantData.get());
 
         return Optional.ofNullable(restaraunt);
+    }
+
+    @Override
+    public List<Restaurant> findAllBy(String name, String location, List<String> cuisines, Integer page, Integer quantity, String orderBy) {
+        return null;
     }
 }

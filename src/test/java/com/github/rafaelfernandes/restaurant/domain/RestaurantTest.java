@@ -1,7 +1,11 @@
-package com.github.rafaelfernandes.restaurant.application.domain.model;
+package com.github.rafaelfernandes.restaurant.domain;
 
 import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
+import com.github.rafaelfernandes.restaurant.domain.Restaurant;
+import jakarta.validation.ConstraintViolationException;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import util.GenerateData;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,11 +20,70 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RestaurantTest {
 
     private static final Faker faker = new Faker(new Locale("pt", "BR"));
+
+    @Nested
+    class Validate {
+
+        @Nested
+        class Name {
+
+            Restaurant.Address address =  GenerateData.generateAddress();
+
+            @ParameterizedTest
+            @ValueSource(strings = {"Rafael Fernandes Pereira", "Dio", "Gabriela Carolina da Silva Santos Pereira Oliveira Martins Rodrigues Barbosa Almeida Costa Ferreira"})
+            void validateSucessName(String name){
+
+                var restaurant = new Restaurant(name, address);
+
+                assertEquals(name, restaurant.getName());
+
+            }
+
+            @Test
+            void validateNullName(){
+
+                assertThatCode(() -> {
+                    new Restaurant(null, address);
+                })
+                        .isInstanceOf(ConstraintViolationException.class)
+                        .hasMessage("name: O campo deve estar preenchido");
+
+            }
+
+            @Test
+            void validateEmptyName(){
+
+                String name = "";
+
+                assertThatCode(() -> {
+                    new Restaurant(name, address);
+                })
+                        .isInstanceOf(ConstraintViolationException.class)
+                        .hasMessageContainingAll("name: O campo deve estar preenchido", "name: O campo deve ter no minimo 3 e no maximo 100 caracteres");
+
+            }
+
+            @ParameterizedTest
+            @ValueSource(strings = {"Ra", "Esmeralda Carolina da Silva Santos Pereira Oliveira Martins Rodrigues Barbosa Almeida Costa Ferreira Gomes Souza Lima Freitas Lima Pereira Oliveira Martins Rodrigues Barbosa Almeida Costa Ferreira Gomes Souza Lima Freitas Lima Pereira Oliveira Martins Rodrigues Barbosa Almeida"})
+            void validateLessMinimumName(String name){
+
+                assertThatCode(() -> {
+                    new Restaurant(name, address);
+                })
+                        .isInstanceOf(ConstraintViolationException.class)
+                        .hasMessage("name: O campo deve ter no minimo 3 e no maximo 100 caracteres");
+
+            }
+
+        }
+
+    }
 
     @Nested
     @DisplayName("Tests of Create method")
@@ -36,9 +99,9 @@ public class RestaurantTest {
                     faker.address().secondaryAddress(),
                     "Medicina",
                     faker.address().city(),
-                    State.valueOf(faker.address().stateAbbr()));
+                    faker.address().stateAbbr());
 
-            Restaurant restaurant = Restaurant.create(name, address);
+            Restaurant restaurant = new Restaurant(name, address);
 
             assertNotNull(restaurant);
             assertNotNull(restaurant.getRestaurantId());
@@ -58,9 +121,9 @@ public class RestaurantTest {
                     faker.address().secondaryAddress(),
                     "Medicina",
                     faker.address().city(),
-                    State.valueOf(faker.address().stateAbbr()));
+                    faker.address().stateAbbr());
 
-            Restaurant restaurant = Restaurant.create(name, address);
+            Restaurant restaurant = new Restaurant(name, address);
 
             assertNotNull(restaurant.getOpeningHours());
             assertEquals(DayOfWeek.values().length, restaurant.getOpeningHours().size());
@@ -87,7 +150,7 @@ public class RestaurantTest {
                     faker.address().secondaryAddress(),
                     "Medicina",
                     faker.address().city(),
-                    State.valueOf(faker.address().stateAbbr()));
+                    faker.address().stateAbbr());
             LocalDateTime register = LocalDateTime.now();
             List<Restaurant.OpeningHour> openingHours = GenerateData.createDefaultOpeningHours();
             Integer numberOfTables = 5;
@@ -113,7 +176,7 @@ public class RestaurantTest {
                     faker.address().secondaryAddress(),
                     "Medicina",
                     faker.address().city(),
-                    State.valueOf(faker.address().stateAbbr()));
+                    faker.address().stateAbbr());
             LocalDateTime register = LocalDateTime.now();
             Integer numberOfTables = 5;
 

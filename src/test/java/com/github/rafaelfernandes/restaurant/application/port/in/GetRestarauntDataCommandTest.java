@@ -4,12 +4,10 @@ import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class GetRestarauntDataCommandTest {
 
@@ -23,7 +21,7 @@ class GetRestarauntDataCommandTest {
 
             GetRestarauntDataCommand command = new GetRestarauntDataCommand(uuid);
 
-            assertThat(command.restaurantId()).isEqualTo(uuid);
+            assertThat(command.getRestaurantId()).isEqualTo(uuid);
 
         }
 

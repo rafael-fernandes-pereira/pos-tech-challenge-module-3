@@ -1,8 +1,7 @@
 package com.github.rafaelfernandes.restaurant.adapter.in.web;
 
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
-import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
-import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantCommand;
+import com.github.rafaelfernandes.restaurant.domain.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.in.GetRestarauntDataCommand;
 import com.github.rafaelfernandes.restaurant.application.port.in.GetRestaurantUseCase;
 import com.github.rafaelfernandes.restaurant.application.port.in.SaveDataRestaurantUseCase;
@@ -65,7 +64,7 @@ class RestaurantControllerTest {
 
             var restaurant = GenerateData.gerenRestaurantRequest();
 
-            when(saveDataRestaurantUseCase.create(any(CreateRestaurantCommand.class)))
+            when(saveDataRestaurantUseCase.create(any(Restaurant.class)))
                     .thenThrow(RestaurantDuplicateException.class);
 
             mockMvc.perform(
@@ -86,7 +85,7 @@ class RestaurantControllerTest {
 
             var restaurantId = new Restaurant.RestaurantId(UUID.randomUUID());
 
-            when(saveDataRestaurantUseCase.create(any(CreateRestaurantCommand.class)))
+            when(saveDataRestaurantUseCase.create(any(Restaurant.class)))
                     .thenReturn(restaurantId);
 
             mockMvc.perform(
@@ -151,7 +150,7 @@ class RestaurantControllerTest {
                     .andExpect(jsonPath("$.address.addittionalDetails").value(restaurant.get().getAddress().getAddittionalDetails()))
                     .andExpect(jsonPath("$.address.neighborhood").value(restaurant.get().getAddress().getNeighborhood()))
                     .andExpect(jsonPath("$.address.city").value(restaurant.get().getAddress().getCity()))
-                    .andExpect(jsonPath("$.address.state").value(restaurant.get().getAddress().getState().name()))
+                    .andExpect(jsonPath("$.address.state").value(restaurant.get().getAddress().getState()))
             ;
 
         }

@@ -1,7 +1,7 @@
 package com.github.rafaelfernandes.restaurant.application.domain.service;
 
 
-import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
+import com.github.rafaelfernandes.restaurant.domain.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.out.CreateRestaurantPort;
 import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicateException;
 import util.GenerateData;
@@ -28,7 +28,7 @@ class SaveDataRestaurantServiceTest {
     @Test
     void validateCreateRestaurant(){
 
-        var command = GenerateData.createRestaurantCommand();
+        var command = GenerateData.createRestaurant();
 
         var restaurantId = new Restaurant.RestaurantId(UUID.randomUUID());
 
@@ -45,7 +45,7 @@ class SaveDataRestaurantServiceTest {
     @Test
     void validateDuplicateRestaurant(){
 
-        var command = GenerateData.createRestaurantCommand();
+        var command = GenerateData.createRestaurant();
         when(createRestaurantPort.create(any(Restaurant.class)))
                 .thenThrow(RestaurantDuplicateException.class);
 

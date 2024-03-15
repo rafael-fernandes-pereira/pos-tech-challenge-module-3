@@ -1,11 +1,16 @@
-package com.github.rafaelfernandes.restaurant.application.domain.model;
+package com.github.rafaelfernandes.restaurant.domain;
 
 import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
+import com.github.rafaelfernandes.restaurant.common.validation.ValueOfEnum;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -14,14 +19,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.github.rafaelfernandes.restaurant.common.validation.Validation.validate;
+
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Restaurant {
 
     private final RestaurantId restaurantId;
 
+    @NotEmpty(message = "O campo deve estar preenchido")
+    @Length(min = 3, max = 100, message = "O campo deve ter no minimo 3 e no maximo 100 caracteres")
     private String name;
 
+    @NotNull(message = "O campo deve estar preenchido")
     private Address address;
 
     private final LocalDateTime register;
@@ -40,14 +50,40 @@ public class Restaurant {
     }
 
     @Value
-    public static class Address{
-        String street;
-        Integer number;
-        String addittionalDetails;
-        String neighborhood;
-        String city;
-        State state;
+    public static class Address {
 
+        @NotEmpty(message = "O campo deve estar preenchido")
+        @Length( min = 10, max = 150, message = "O campo deve ter no minimo 10 e no maximo 150 caracteres")
+        String street;
+
+        @NotNull(message = "O campo deve estar preenchido")
+        @Positive(message = "O campo deve ser maior que zero (0)")
+        Integer number;
+
+        @Length( max = 150, message = "O campo deve ter no máximo 150 caracteres")
+        String addittionalDetails;
+
+        @NotEmpty(message = "O campo deve estar preenchido")
+        @Length( min = 3, max = 30, message = "O campo deve ter no minimo 3 e no máximo 30 caracteres")
+        String neighborhood;
+
+        @NotEmpty(message = "O campo deve estar preenchido")
+        @Length( min = 3, max = 60, message = "O campo deve ter no minimo 3 e no máximo 60 caracteres")
+        String city;
+
+        @NotNull(message = "O campo deve estar preenchido")
+        @ValueOfEnum(enumClass = State.class, message = "O campo deve ser uma sigla de estado válida")
+        String state;
+
+        public Address(String street, Integer number, String addittionalDetails, String neighborhood, String city, String state) {
+            this.street = street;
+            this.number = number;
+            this.addittionalDetails = addittionalDetails;
+            this.neighborhood = neighborhood;
+            this.city = city;
+            this.state = state;
+            validate(this);
+        }
     }
 
     @Value
@@ -57,21 +93,29 @@ public class Restaurant {
         LocalTime end;
     }
 
-    public static Restaurant create(String name, Address address){
+    public Restaurant(String name, Address address) {
+        this.name = name;
+        this.address = address;
 
-        var restaurantId = new RestaurantId(UUID.randomUUID());
+        validate(this);
 
-        var register = LocalDateTime.now();
+        this.restaurantId = new RestaurantId(UUID.randomUUID());
+        this.register = LocalDateTime.now();
 
-        var openingHours = new ArrayList<OpeningHour>();
+        this.openingHours = new ArrayList<>();
         for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
             LocalTime start = LocalTime.of(9, 0);
             LocalTime end = LocalTime.of(18, 0);
             openingHours.add(new OpeningHour(dayOfWeek, start, end));
         }
 
-        return new Restaurant(restaurantId, name, address, register, openingHours, 0, new ArrayList<Cuisine>(), Boolean.FALSE);
+        this.cuisines = new ArrayList<>();
+
+        this.tables = 0;
+        this.stateChange = Boolean.FALSE;
+
     }
+
 
     public static Restaurant of(UUID restaurantId, String name, Address address, LocalDateTime register, List<OpeningHour> openingHours, Integer numberOfTables, List<Cuisine> cuisines){
         return new Restaurant(new RestaurantId(restaurantId), name, address, register, openingHours, numberOfTables, cuisines, Boolean.FALSE);

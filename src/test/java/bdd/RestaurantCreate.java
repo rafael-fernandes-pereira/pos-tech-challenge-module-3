@@ -156,11 +156,4 @@ public class RestaurantCreate {
         response.then().statusCode(HttpStatus.OK.value());
 
     }
-
-    @And("the response should contain the details of the created restaurant")
-    public void theResponseShouldContainTheDetailsOfTheCreatedRestaurant() {
-
-
-
-    }
 }

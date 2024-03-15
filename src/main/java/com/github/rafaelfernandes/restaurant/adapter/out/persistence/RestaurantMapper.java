@@ -1,6 +1,6 @@
 package com.github.rafaelfernandes.restaurant.adapter.out.persistence;
 
-import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
+import com.github.rafaelfernandes.restaurant.domain.Restaurant;
 import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
 import org.springframework.stereotype.Component;
@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 class RestaurantMapper {
@@ -40,7 +39,7 @@ class RestaurantMapper {
         addressEntity.setAddittionalDetails(restaurant.getAddress().getAddittionalDetails());
         addressEntity.setNeighborhood(restaurant.getAddress().getNeighborhood());
         addressEntity.setCity(restaurant.getAddress().getCity());
-        addressEntity.setState(restaurant.getAddress().getState().name().toUpperCase());
+        addressEntity.setState(restaurant.getAddress().getState().toUpperCase());
 
 
         restaurantEntity.setOpeningHours(openingHoursEntity);
@@ -57,7 +56,7 @@ class RestaurantMapper {
                 restaurantJpaEntity.getAddress().getAddittionalDetails(),
                 restaurantJpaEntity.getAddress().getNeighborhood(),
                 restaurantJpaEntity.getAddress().getCity(),
-                State.valueOf(restaurantJpaEntity.getAddress().getState())
+                restaurantJpaEntity.getAddress().getState()
         );
 
         var openinHours = toOpeningHoursModel(restaurantJpaEntity.getOpeningHours());

@@ -3,9 +3,7 @@ package util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.AddressRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
-import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
-import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantAddressCommand;
-import com.github.rafaelfernandes.restaurant.application.port.in.CreateRestaurantCommand;
+import com.github.rafaelfernandes.restaurant.domain.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.in.GetRestarauntDataCommand;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
 import net.datafaker.Faker;
@@ -38,7 +36,7 @@ public class GenerateData {
         String name = faker.restaurant().name();
         Restaurant.Address address = generateAddress();
 
-        return Restaurant.create(name, address);
+        return new Restaurant(name, address);
     }
 
     public static Restaurant.Address generateAddress() {
@@ -48,24 +46,7 @@ public class GenerateData {
                 faker.address().secondaryAddress(),
                 faker.name().lastName(),
                 faker.address().city(),
-                State.valueOf(faker.address().stateAbbr()));
-    }
-
-    public static CreateRestaurantAddressCommand generateAddressCommand(){
-        return new CreateRestaurantAddressCommand(faker.address().streetAddress(),
-                Integer.valueOf(faker.address().streetAddressNumber()),
-                faker.address().secondaryAddress(),
-                faker.name().lastName(),
-                faker.address().city(),
-                faker.address().stateAbbr()
-        );
-    }
-
-    public static CreateRestaurantCommand createRestaurantCommand(){
-        String name = faker.restaurant().name();
-        CreateRestaurantAddressCommand address = generateAddressCommand();
-
-        return new CreateRestaurantCommand(name, address);
+                faker.address().stateAbbr());
     }
 
     public static AddressRequest generateAddressRequest(){
@@ -119,7 +100,7 @@ public class GenerateData {
 
     }
 
-    public static GetRestarauntDataCommand createGetRestarauntDataCommand(){
+    public static GetRestarauntDataCommand createGetRestarauntDataCommandId(){
 
         return new GetRestarauntDataCommand(UUID.randomUUID().toString());
 

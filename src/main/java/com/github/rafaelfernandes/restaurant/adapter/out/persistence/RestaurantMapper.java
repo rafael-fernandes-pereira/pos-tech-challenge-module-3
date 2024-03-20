@@ -24,7 +24,7 @@ class RestaurantMapper {
 
         for (Restaurant.OpeningHour openingHour: restaurant.getOpeningHours()){
             var openingHourEntity = new OpeningHourJpaEntity();
-            openingHourEntity.setDayOfWeek(openingHour.getDayOfWeek().name().toUpperCase());
+            openingHourEntity.setDayOfWeek(openingHour.getDayOfWeek().toUpperCase());
             openingHourEntity.setStart(openingHour.getStart());
             openingHourEntity.setEnd(openingHour.getEnd());
             openingHourEntity.setRestaurant(restaurantEntity);
@@ -58,8 +58,8 @@ class RestaurantMapper {
                 .append("_")
         ;
 
-        for (Cuisine cuisine : restaurant.getCuisines()){
-            fullSearch.append(cuisine.name().toUpperCase()).append("_");
+        for (Restaurant.Cuisine cuisine : restaurant.getCuisines()){
+            fullSearch.append(cuisine.getCuisine().toUpperCase()).append("_");
         }
 
         restaurantEntity.setFullSearch(fullSearch.toString());
@@ -86,12 +86,11 @@ class RestaurantMapper {
 
         var cuisines = restaurantJpaEntity.getCuisines() == null ?
 
-                new ArrayList<Cuisine>() :
+                new ArrayList<Restaurant.Cuisine>() :
 
                 restaurantJpaEntity.getCuisines().stream()
-                .map(cuisineJpaEntity -> Cuisine.valueOf(cuisineJpaEntity.getCusine()))
+                .map(cuisineJpaEntity -> new Restaurant.Cuisine(cuisineJpaEntity.getCusine()))
                 .toList();
-
 
         return Restaurant.of(
                 restaurantJpaEntity.getId().toString(),
@@ -107,7 +106,7 @@ class RestaurantMapper {
     List<Restaurant.OpeningHour> toOpeningHoursModel(List<OpeningHourJpaEntity> openingHourJpaEntities) {
         return openingHourJpaEntities.stream()
                 .map(openingHourJpaEntity -> new Restaurant.OpeningHour(
-                        DayOfWeek.valueOf(openingHourJpaEntity.getDayOfWeek()),
+                        openingHourJpaEntity.getDayOfWeek(),
                         openingHourJpaEntity.getStart(),
                         openingHourJpaEntity.getEnd()
                 )).toList();

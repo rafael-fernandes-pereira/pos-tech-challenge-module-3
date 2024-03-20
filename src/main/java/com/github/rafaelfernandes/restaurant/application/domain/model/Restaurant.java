@@ -1,6 +1,5 @@
 package com.github.rafaelfernandes.restaurant.application.domain.model;
 
-import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
 import com.github.rafaelfernandes.restaurant.common.validation.ValueOfEnum;
 import jakarta.validation.constraints.NotEmpty;
@@ -36,13 +35,14 @@ public class Restaurant {
 
     private final LocalDateTime register;
 
+    @NotNull(message = "O campo deve estar preenchido")
     private List<OpeningHour> openingHours;
 
+    @NotNull(message = "O campo deve estar preenchido")
     private Integer tables;
 
+    @NotNull(message = "O campo deve estar preenchido")
     private List<Cuisine> cuisines;
-
-    private Boolean stateChange;
 
     public record RestaurantId(
             @org.hibernate.validator.constraints.UUID(message = "O campo deve ser do tipo UUID")
@@ -93,17 +93,28 @@ public class Restaurant {
 
     @Value
     public static class OpeningHour {
-        DayOfWeek dayOfWeek;
+        @NotNull(message = "O campo deve estar preenchido")
+        @ValueOfEnum(enumClass = DayOfWeek.class, message = "O campo deve ser uma sigla de dias válidos")
+        String dayOfWeek;
+
+        @NotNull(message = "O campo deve estar preenchido")
         LocalTime start;
+
+        @NotNull(message = "O campo deve estar preenchido")
         LocalTime end;
+    }
+
+    @Value
+    public static class Cuisine {
+        @NotEmpty(message = "O campo deve ser preenchido")
+        @ValueOfEnum(enumClass = com.github.rafaelfernandes.restaurant.common.enums.Cuisine.class)
+        String cuisine;
     }
 
     public Restaurant(String name, Address address, List<OpeningHour> openingHours, List<Cuisine> cuisines, Integer tables) {
         this.name = name;
         this.address = address;
 
-
-        this.restaurantId = new RestaurantId(UUID.randomUUID().toString());
         this.register = LocalDateTime.now();
 
         this.openingHours = openingHours;
@@ -112,68 +123,12 @@ public class Restaurant {
         this.tables = tables;
         validate(this);
 
-        this.stateChange = Boolean.FALSE;
+        this.restaurantId = new RestaurantId(UUID.randomUUID().toString());
 
     }
 
     public static Restaurant of(String restaurantId, String name, Address address, LocalDateTime register, List<OpeningHour> openingHours, Integer numberOfTables, List<Cuisine> cuisines){
-        return new Restaurant(new RestaurantId(restaurantId), name, address, register, openingHours, numberOfTables, cuisines, Boolean.FALSE);
+        return new Restaurant(new RestaurantId(restaurantId), name, address, register, openingHours, numberOfTables, cuisines);
     }
 
-    public void changeName(String name){
-        this.stateChange = Boolean.TRUE;
-        this.name = name;
-    }
-
-    public void changeAddress(Address address){
-        this.stateChange = Boolean.TRUE;
-        this.address = address;
-    }
-
-    public Boolean addOpeningHours(OpeningHour openingHour){
-        if (this.openingHours.contains(openingHour))
-            return Boolean.FALSE;
-
-        this.openingHours.add(openingHour);
-        this.stateChange = Boolean.TRUE;
-
-        return Boolean.TRUE;
-    }
-
-    public Boolean removeOpeningHours(OpeningHour openingHour){
-        if (this.openingHours.remove(openingHour)){
-            this.stateChange = Boolean.TRUE;
-            return Boolean.TRUE;
-        }
-
-        return Boolean.FALSE;
-    }
-
-    public void changeNumberOfTables(Integer numberOfTables){
-        if (numberOfTables > 0){
-            this.stateChange = Boolean.TRUE;
-            this.tables = numberOfTables;
-        }
-    }
-
-    public Boolean addCuisine(Cuisine cuisine){
-        if (this.cuisines.contains(cuisine)){
-            return Boolean.FALSE;
-        }
-
-        this.cuisines.add(cuisine);
-        this.stateChange = Boolean.TRUE;
-
-        return Boolean.TRUE;
-    }
-
-    public Boolean removeCuisine(Cuisine cuisine){
-
-        if(this.cuisines.remove(cuisine)){
-            this.stateChange = Boolean.TRUE;
-            return Boolean.TRUE;
-        }
-        return Boolean.FALSE;
-
-    }
 }

@@ -61,14 +61,14 @@ public class RestaurantController {
         var openinHours = request.opening_hour().stream()
                 .map(openingHourRequest -> new
                         Restaurant.OpeningHour(
-                            DayOfWeek.valueOf(openingHourRequest.day_of_week()),
+                            openingHourRequest.day_of_week(),
                             openingHourRequest.start(),
                             openingHourRequest.end()
                         )
                 ).toList();
 
         var cuisines = request.cuisines().stream()
-                .map(cuisineRequest -> Cuisine.valueOf(cuisineRequest.cuisine()))
+                .map(cuisineRequest -> new Restaurant.Cuisine(cuisineRequest.cuisine()))
                 .toList();
 
         var restaurantModel = new Restaurant(

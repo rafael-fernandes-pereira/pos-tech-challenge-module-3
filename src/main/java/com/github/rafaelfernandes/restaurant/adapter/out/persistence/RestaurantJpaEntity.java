@@ -36,7 +36,7 @@ public class RestaurantJpaEntity {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "restaurant")
     private List<OpeningHourJpaEntity> openingHours;
 
-    @OneToMany(targetEntity = CuisineJpaEntity.class)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "restaurant")
     private List<CuisineJpaEntity> cuisines;
 
     @OneToOne(cascade = CascadeType.ALL)

@@ -1,6 +1,7 @@
 package util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.AddressRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.CuisineRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.OpeningHourRequest;
@@ -27,7 +28,7 @@ public class GenerateData {
         for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
             LocalTime start = LocalTime.of(9, 0);
             LocalTime end = LocalTime.of(18, 0);
-            openingHours.add(new Restaurant.OpeningHour(dayOfWeek, start, end));
+            openingHours.add(new Restaurant.OpeningHour(dayOfWeek.name(), start, end));
         }
 
         return openingHours;
@@ -51,10 +52,10 @@ public class GenerateData {
                 faker.address().stateAbbr());
     }
 
-    public static List<Cuisine> generateCuisines() {
-        var cuisines = new ArrayList<Cuisine>();
+    public static List<Restaurant.Cuisine> generateCuisines() {
+        var cuisines = new ArrayList<Restaurant.Cuisine>();
 
-        cuisines.add(Cuisine.BRAZILIAN);
+        cuisines.add(new Restaurant.Cuisine(Cuisine.BRAZILIAN.name()));
 
         return cuisines;
     }
@@ -98,9 +99,12 @@ public class GenerateData {
         return new RestaurantRequest(name, addressRequest, 10, generateOpeningHoursRequest(), generateCuisinesRequest());
     }
 
+    private static ObjectMapper mapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule());
+
     public static String asJsonString(final Object obj) {
         try {
-            return new ObjectMapper().writeValueAsString(obj);
+            return mapper.writeValueAsString(obj);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

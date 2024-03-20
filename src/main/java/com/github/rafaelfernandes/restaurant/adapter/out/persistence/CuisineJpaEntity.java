@@ -21,5 +21,8 @@ public class CuisineJpaEntity {
     @Column(name = "cusine")
     private String cusine;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "restaurant_id", referencedColumnName = "id")
+    private RestaurantJpaEntity restaurant;
 
 }

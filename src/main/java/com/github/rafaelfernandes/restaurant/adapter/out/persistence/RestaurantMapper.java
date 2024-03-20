@@ -58,15 +58,20 @@ class RestaurantMapper {
                 .append("_")
         ;
 
+        var cuisines = new ArrayList<CuisineJpaEntity>();
+
         for (Restaurant.Cuisine cuisine : restaurant.getCuisines()){
+            var cuisineJpa =  new CuisineJpaEntity();
+            cuisineJpa.setCusine(cuisine.getCuisine());
+            cuisines.add(cuisineJpa);
             fullSearch.append(cuisine.getCuisine().toUpperCase()).append("_");
         }
 
         restaurantEntity.setFullSearch(fullSearch.toString());
 
-
         restaurantEntity.setOpeningHours(openingHoursEntity);
         restaurantEntity.setAddress(addressEntity);
+        restaurantEntity.setCuisines(cuisines);
 
         return restaurantEntity;
     }

@@ -14,9 +14,6 @@ public interface GetRestaurantPort {
 
     List<Restaurant> findAllBy(String name,
                                String location,
-                               List<Cuisine> cuisines,
-                               Integer page,
-                               Integer quantity,
-                               OrderBy orderBy);
+                               List<Cuisine> cuisines);
 
 }

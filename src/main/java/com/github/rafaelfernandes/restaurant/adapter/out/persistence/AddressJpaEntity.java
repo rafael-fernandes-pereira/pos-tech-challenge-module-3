@@ -18,25 +18,26 @@ public class AddressJpaEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "street")
+    @Column(name = "street", nullable = false)
     private String street;
 
-    @Column(name = "number")
+    @Column(name = "number", nullable = false)
     private Integer number;
 
-    @Column(name = "addittionalDetails", nullable = true)
+    @Column(name = "addittionalDetails")
     private String addittionalDetails;
 
-    @Column(name = "neighborhood")
+    @Column(name = "neighborhood", nullable = false)
     private String neighborhood;
 
-    @Column(name = "city")
+    @Column(name = "city", nullable = false)
     private String city;
 
-    @Column(name = "state")
+    @Column(name = "state", nullable = false)
     private String state;
 
     @OneToOne(mappedBy = "address")
     private RestaurantJpaEntity restaurant;
+
 
 }

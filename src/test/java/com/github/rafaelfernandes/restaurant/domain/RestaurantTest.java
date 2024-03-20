@@ -25,6 +25,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RestaurantTest {
 
     private static final Faker faker = new Faker(new Locale("pt", "BR"));
+    Restaurant.Address address =  GenerateData.generateAddress();
+
+    List<Restaurant.OpeningHour> openingHours = GenerateData.createDefaultOpeningHours();
+
+    List<Cuisine> cuisines = GenerateData.generateCuisines();
 
     @Nested
     class Validate {
@@ -32,13 +37,12 @@ public class RestaurantTest {
         @Nested
         class Name {
 
-            Restaurant.Address address =  GenerateData.generateAddress();
 
             @ParameterizedTest
             @ValueSource(strings = {"Rafael Fernandes Pereira", "Dio", "Gabriela Carolina da Silva Santos Pereira Oliveira Martins Rodrigues Barbosa Almeida Costa Ferreira"})
             void validateSucessName(String name){
 
-                var restaurant = new Restaurant(name, address);
+                var restaurant = new Restaurant(name, address, openingHours, cuisines, 10);
 
                 assertEquals(name, restaurant.getName());
 
@@ -48,7 +52,7 @@ public class RestaurantTest {
             void validateNullName(){
 
                 assertThatCode(() -> {
-                    new Restaurant(null, address);
+                    new Restaurant(null, address, openingHours, cuisines, 10);
                 })
                         .isInstanceOf(ConstraintViolationException.class)
                         .hasMessage("name: O campo deve estar preenchido");
@@ -61,7 +65,7 @@ public class RestaurantTest {
                 String name = "";
 
                 assertThatCode(() -> {
-                    new Restaurant(name, address);
+                    new Restaurant(name, address, openingHours, cuisines, 10);
                 })
                         .isInstanceOf(ConstraintViolationException.class)
                         .hasMessageContainingAll("name: O campo deve estar preenchido", "name: O campo deve ter no minimo 3 e no maximo 100 caracteres");
@@ -73,7 +77,7 @@ public class RestaurantTest {
             void validateLessMinimumName(String name){
 
                 assertThatCode(() -> {
-                    new Restaurant(name, address);
+                    new Restaurant(name, address, openingHours, cuisines, 10);
                 })
                         .isInstanceOf(ConstraintViolationException.class)
                         .hasMessage("name: O campo deve ter no minimo 3 e no maximo 100 caracteres");
@@ -100,7 +104,7 @@ public class RestaurantTest {
                     faker.address().city(),
                     faker.address().stateAbbr());
 
-            Restaurant restaurant = new Restaurant(name, address);
+            Restaurant restaurant = new Restaurant(name, address, openingHours, cuisines, 10);
 
             assertNotNull(restaurant);
             assertNotNull(restaurant.getRestaurantId());
@@ -122,7 +126,7 @@ public class RestaurantTest {
                     faker.address().city(),
                     faker.address().stateAbbr());
 
-            Restaurant restaurant = new Restaurant(name, address);
+            Restaurant restaurant = new Restaurant(name, address, openingHours, cuisines, 10);
 
             assertNotNull(restaurant.getOpeningHours());
             assertEquals(DayOfWeek.values().length, restaurant.getOpeningHours().size());
@@ -336,7 +340,7 @@ public class RestaurantTest {
 
         @Test
         void addTwoSameCuisineRestaurantu(){
-            var cuisine = Cuisine.BRAZILIAN;
+            var cuisine = Cuisine.ITALIAN;
 
             var isAdd = this.restaurant.addCuisine(cuisine);
 
@@ -362,7 +366,7 @@ public class RestaurantTest {
 
         @Test
         void removeCuisineRestaurant(){
-            var cuisine = Cuisine.BRAZILIAN;
+            var cuisine = Cuisine.ITALIAN;
 
             var isAdd = this.restaurant.addCuisine(cuisine);
 

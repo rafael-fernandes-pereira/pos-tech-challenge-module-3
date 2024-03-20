@@ -4,6 +4,7 @@ import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRe
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.in.GetRestaurantUseCase;
 import com.github.rafaelfernandes.restaurant.application.port.in.SaveDataRestaurantUseCase;
+import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
 import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicateException;
 import com.github.rafaelfernandes.restaurant.common.exception.RestaurantNotFoundException;
 import util.GenerateData;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -45,7 +47,11 @@ class RestaurantControllerTest {
 
             String name = null;
 
-            RestaurantRequest restaurant = new RestaurantRequest(name, address);
+            var openingHours = GenerateData.generateOpeningHoursRequest();
+
+            var cuisines = GenerateData.generateCuisinesRequest();
+
+            RestaurantRequest restaurant = new RestaurantRequest(name, address, 10, openingHours, cuisines);
 
             mockMvc.perform(
                             post("/restaurants/")

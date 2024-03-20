@@ -1,6 +1,8 @@
 package com.github.rafaelfernandes.restaurant.adapter.in.web;
 
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.AddressRequest;
+import com.github.rafaelfernandes.restaurant.adapter.in.web.request.CuisineRequest;
+import com.github.rafaelfernandes.restaurant.adapter.in.web.request.OpeningHourRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
 import com.github.rafaelfernandes.restaurant.adapter.out.persistence.RestaurantRepository;
 import com.github.rafaelfernandes.restaurant.common.enums.State;
@@ -25,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -50,6 +53,10 @@ public class RestaurantControllerIT {
     void tearDown(){
         restaurantRepository.deleteAll();
     }
+
+    List<OpeningHourRequest> openingHours = GenerateData.generateOpeningHoursRequest();
+
+    List<CuisineRequest> cuisines = GenerateData.generateCuisinesRequest();
 
     @Nested
     class Create {
@@ -82,7 +89,7 @@ public class RestaurantControllerIT {
             AddressRequest addressRequest = GenerateData.generateAddressRequest();
             String name = "COMIDA BOA";
 
-            RestaurantRequest request = new RestaurantRequest(name, addressRequest);
+            RestaurantRequest request = new RestaurantRequest(name, addressRequest, 10, openingHours, cuisines);
 
             ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -109,7 +116,7 @@ public class RestaurantControllerIT {
 
                 AddressRequest addressRequest = GenerateData.generateAddressRequest();
 
-                RestaurantRequest request = new RestaurantRequest(name, addressRequest);
+                RestaurantRequest request = new RestaurantRequest(name, addressRequest, 10, openingHours, cuisines);
 
                 ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -130,7 +137,7 @@ public class RestaurantControllerIT {
 
                 AddressRequest addressRequest = GenerateData.generateAddressRequest();
 
-                RestaurantRequest request = new RestaurantRequest(name, addressRequest);
+                RestaurantRequest request = new RestaurantRequest(name, addressRequest, 10, openingHours, cuisines);
 
                 ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -150,7 +157,7 @@ public class RestaurantControllerIT {
 
                 AddressRequest addressRequest = GenerateData.generateAddressRequest();
 
-                RestaurantRequest request = new RestaurantRequest(name, addressRequest);
+                RestaurantRequest request = new RestaurantRequest(name, addressRequest, 10, openingHours, cuisines);
 
                 ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -190,7 +197,8 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
+
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -216,7 +224,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -244,7 +252,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -272,7 +280,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -303,7 +311,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -329,7 +337,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -356,7 +364,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -389,7 +397,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -409,7 +417,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -431,7 +439,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -466,7 +474,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -492,7 +500,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -520,7 +528,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -549,7 +557,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -581,7 +589,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -608,7 +616,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -636,7 +644,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -664,7 +672,7 @@ public class RestaurantControllerIT {
                             state
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -695,7 +703,7 @@ public class RestaurantControllerIT {
                             null
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 
@@ -721,7 +729,7 @@ public class RestaurantControllerIT {
                             "teste"
                     );
 
-                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest);
+                    RestaurantRequest request = new RestaurantRequest("Sr K.ebab", addressRequest, 10, openingHours, cuisines);
 
                     ResponseEntity<String> response = createRestaurantPost(request);
 

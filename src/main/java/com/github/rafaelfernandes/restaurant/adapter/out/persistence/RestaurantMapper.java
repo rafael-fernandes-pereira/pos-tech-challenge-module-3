@@ -41,6 +41,29 @@ class RestaurantMapper {
         addressEntity.setCity(restaurant.getAddress().getCity());
         addressEntity.setState(restaurant.getAddress().getState().toUpperCase());
 
+        var fullSearch = new StringBuilder()
+                .append(restaurant.getName())
+                .append("_")
+                .append(restaurant.getAddress().getStreet())
+                .append("_")
+                .append(restaurant.getAddress().getNumber())
+                .append("_")
+                .append(restaurant.getAddress().getAddittionalDetails())
+                .append("_")
+                .append(restaurant.getAddress().getNeighborhood())
+                .append("_")
+                .append(restaurant.getAddress().getCity())
+                .append("_")
+                .append(restaurant.getAddress().getState().toUpperCase())
+                .append("_")
+        ;
+
+        for (Cuisine cuisine : restaurant.getCuisines()){
+            fullSearch.append(cuisine.name().toUpperCase()).append("_");
+        }
+
+        restaurantEntity.setFullSearch(fullSearch.toString());
+
 
         restaurantEntity.setOpeningHours(openingHoursEntity);
         restaurantEntity.setAddress(addressEntity);

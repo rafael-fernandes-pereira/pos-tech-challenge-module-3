@@ -11,7 +11,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "restaurant")
+@Table(name = "restaurant",
+        indexes = {
+            @Index(name = "idx_full_search", columnList = "full_search")
+        }
+    )
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,6 +42,10 @@ public class RestaurantJpaEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private AddressJpaEntity address;
+
+    @Column(name = "full_search", columnDefinition = "TEXT")
+    private String fullSearch;
+
 
 
 

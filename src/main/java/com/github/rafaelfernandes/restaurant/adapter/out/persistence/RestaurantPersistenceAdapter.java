@@ -9,7 +9,12 @@ import com.github.rafaelfernandes.restaurant.common.enums.OrderBy;
 import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicateException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,7 +54,18 @@ public class RestaurantPersistenceAdapter implements CreateRestaurantPort, GetRe
     }
 
     @Override
-    public List<Restaurant> findAllBy(String name, String location, List<Cuisine> cuisines, Integer page, Integer quantity, OrderBy orderBy) {
-        return null;
+    public List<Restaurant> findAllBy(String name, String location, List<Cuisine> cuisines) {
+        var restaurantRepositoryPage = restaurantRepository.findRestaurantsByCriteria(
+            name, location, cuisines
+        );
+
+        if (restaurantRepositoryPage.isEmpty()) return new ArrayList<>();
+
+        return restaurantRepositoryPage.stream()
+                .map(restaurantMapper::toModel)
+                .toList();
+
+
+
     }
 }

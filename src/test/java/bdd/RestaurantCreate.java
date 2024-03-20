@@ -2,6 +2,8 @@ package bdd;
 
 
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.AddressRequest;
+import com.github.rafaelfernandes.restaurant.adapter.in.web.request.CuisineRequest;
+import com.github.rafaelfernandes.restaurant.adapter.in.web.request.OpeningHourRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
 import io.restassured.http.ContentType;
 import util.GenerateData;
@@ -18,6 +20,8 @@ import org.junit.platform.suite.api.SelectClasspathResource;
 import org.junit.platform.suite.api.Suite;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
@@ -63,7 +67,11 @@ public class RestaurantCreate {
 
         AddressRequest addressRequest = GenerateData.generateAddressRequest();
 
-        RestaurantRequest request = new RestaurantRequest(null, addressRequest);
+        List<OpeningHourRequest> openingHours = GenerateData.generateOpeningHoursRequest();
+
+        List<CuisineRequest> cuisines = GenerateData.generateCuisinesRequest();
+
+        RestaurantRequest request = new RestaurantRequest(null, addressRequest, 10, openingHours, cuisines);
 
         response = given(rspec)
                 .body(request)
@@ -76,7 +84,11 @@ public class RestaurantCreate {
 
         AddressRequest addressRequest = GenerateData.generateAddressRequest();
 
-        RestaurantRequest request = new RestaurantRequest("BH", addressRequest);
+        List<OpeningHourRequest> openingHours = GenerateData.generateOpeningHoursRequest();
+
+        List<CuisineRequest> cuisines = GenerateData.generateCuisinesRequest();
+
+        RestaurantRequest request = new RestaurantRequest("BH", addressRequest, 10, openingHours, cuisines);
 
         response = given(rspec)
                 .body(request)
@@ -108,7 +120,11 @@ public class RestaurantCreate {
 
         AddressRequest addressRequest = GenerateData.generateAddressRequest();
 
-        RestaurantRequest request = new RestaurantRequest(name, addressRequest);
+        List<OpeningHourRequest> openingHours = GenerateData.generateOpeningHoursRequest();
+
+        List<CuisineRequest> cuisines = GenerateData.generateCuisinesRequest();
+
+        RestaurantRequest request = new RestaurantRequest(name, addressRequest, 10, openingHours, cuisines);
 
         given(rspec)
             .body(request)
@@ -121,7 +137,11 @@ public class RestaurantCreate {
     public void aRequestIsMadeToCreateARestaurantWithTheSameName(String name) {
         AddressRequest addressRequest = GenerateData.generateAddressRequest();
 
-        RestaurantRequest request = new RestaurantRequest(name, addressRequest);
+        List<OpeningHourRequest> openingHours = GenerateData.generateOpeningHoursRequest();
+
+        List<CuisineRequest> cuisines = GenerateData.generateCuisinesRequest();
+
+        RestaurantRequest request = new RestaurantRequest(name, addressRequest, 10, openingHours, cuisines);
 
         response = given(rspec)
                 .body(request)

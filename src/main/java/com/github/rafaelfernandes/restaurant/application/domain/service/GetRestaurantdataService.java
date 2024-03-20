@@ -40,15 +40,12 @@ public class GetRestaurantdataService implements GetRestaurantUseCase {
     }
 
     @Override
-    public List<Restaurant> findAllBy(String name, String location, List<Cuisine> cuisines, Integer page, Integer quantity, OrderBy orderBy) {
+    public List<Restaurant> findAllBy(String name, String location, List<Cuisine> cuisines) {
 
         var restaurants = getRestaurantPort.findAllBy(
                 name,
                 location,
-                cuisines,
-                page,
-                page,
-                orderBy);
+                cuisines);
 
         if (restaurants.isEmpty())  throw new RestaurantNotFoundException();
 

@@ -7,6 +7,7 @@ import com.github.rafaelfernandes.restaurant.adapter.in.web.response.RestaurantR
 import com.github.rafaelfernandes.restaurant.application.port.in.*;
 import com.github.rafaelfernandes.restaurant.common.annotations.WebAdapter;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
+import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.time.DayOfWeek;
 import java.util.UUID;
 
 @WebAdapter
@@ -56,8 +58,21 @@ public class RestaurantController {
                 request.address().state()
         );
 
+        var openinHours = request.opening_hour().stream()
+                .map(openingHourRequest -> new
+                        Restaurant.OpeningHour(
+                            DayOfWeek.valueOf(openingHourRequest.day_of_week()),
+                            openingHourRequest.start(),
+                            openingHourRequest.end()
+                        )
+                ).toList();
+
+        var cuisines = request.cuisines().stream()
+                .map(cuisineRequest -> Cuisine.valueOf(cuisineRequest.cuisine()))
+                .toList();
+
         var restaurantModel = new Restaurant(
-                request.name(), addressModel
+                request.name(), addressModel, openinHours, cuisines, request.tables()
         );
 
         var retaurantId = this.saveDataRestaurantUseCase.create(restaurantModel);

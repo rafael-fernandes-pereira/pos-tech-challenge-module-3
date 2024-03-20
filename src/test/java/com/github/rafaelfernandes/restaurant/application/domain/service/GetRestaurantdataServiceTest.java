@@ -1,14 +1,16 @@
 package com.github.rafaelfernandes.restaurant.application.domain.service;
 
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
-import com.github.rafaelfernandes.restaurant.application.port.in.GetRestarauntDataCommand;
 import com.github.rafaelfernandes.restaurant.application.port.out.GetRestaurantPort;
+import com.github.rafaelfernandes.restaurant.common.enums.OrderBy;
 import com.github.rafaelfernandes.restaurant.common.exception.RestaurantNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import util.GenerateData;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,53 +27,98 @@ class GetRestaurantdataServiceTest {
     private final GetRestaurantdataService getRestaurantdataService
             = new GetRestaurantdataService(getRestaurantPort);
 
-    @Test
-    void validateSuccess() {
+    @Nested
+    class FindById {
+        @Test
+        void validateSuccess() {
 
-        var restaurant = GenerateData.createRestaurant();
+            var restaurant = GenerateData.createRestaurant();
 
-        var restaurantId = restaurant.getRestaurantId();
+            var restaurantId = restaurant.getRestaurantId();
 
-        when(getRestaurantPort.findById(any(UUID.class)))
-                .thenReturn(Optional.of(restaurant));
+            when(getRestaurantPort.findById(any(UUID.class)))
+                    .thenReturn(Optional.of(restaurant));
 
 
-        var restaurantGetData = getRestaurantdataService.findById(restaurantId);
+            var restaurantGetData = getRestaurantdataService.findById(restaurantId);
 
-        assertThat(restaurantGetData).isPresent();
-        assertThat(restaurantId).isEqualTo(restaurantGetData.get().getRestaurantId());
+            assertThat(restaurantGetData).isPresent();
+            assertThat(restaurantId).isEqualTo(restaurantGetData.get().getRestaurantId());
 
-        verify(getRestaurantPort, times(1)).findById(any(UUID.class));
+            verify(getRestaurantPort, times(1)).findById(any(UUID.class));
+
+        }
+
+        @Test
+        void validateEmptyResult(){
+
+            when(getRestaurantPort.findById(any(UUID.class)))
+                    .thenReturn(Optional.empty());
+
+
+            assertThatThrownBy(() -> {
+                getRestaurantdataService.findById(new Restaurant.RestaurantId(UUID.randomUUID().toString()));
+            })
+                    .isInstanceOf(RestaurantNotFoundException.class)
+                    .hasMessage("Restaurante(s) não existe!");
+
+            verify(getRestaurantPort, times(1)).findById(any(UUID.class));
+
+        }
+
+        @Test
+        void validateRestaurantIdEmpty(){
+
+            assertThatThrownBy(() -> {
+                getRestaurantdataService.findById(new Restaurant.RestaurantId(""));
+            })
+                    .isInstanceOf(ConstraintViolationException.class)
+                    .hasMessage("id: O campo deve ser do tipo UUID");
+
+            verify(getRestaurantPort, times(0)).findById(any(UUID.class));
+
+        }
 
     }
 
-    @Test
-    void validateEmptyResult(){
+    @Nested
+    class FindAllBy {
 
-        when(getRestaurantPort.findById(any(UUID.class)))
-                .thenReturn(Optional.empty());
+        @Test
+        void validateFindSuccess(){
+            var restaurants = new ArrayList<Restaurant>();
+            restaurants.add(GenerateData.createRestaurant());
+            restaurants.add(GenerateData.createRestaurant());
+            restaurants.add(GenerateData.createRestaurant());
+
+            when(getRestaurantPort.findAllBy(any(String.class), any(String.class), anyList()))
+                    .thenReturn(restaurants);
 
 
-        assertThatThrownBy(() -> {
-            getRestaurantdataService.findById(new Restaurant.RestaurantId(UUID.randomUUID().toString()));
-        })
-                .isInstanceOf(RestaurantNotFoundException.class)
-                .hasMessage("Restaurante(s) não existe!");
+            var restaurantGetData = getRestaurantdataService.findAllBy("Dio Mio", "Rua", new ArrayList<>());
 
-        verify(getRestaurantPort, times(1)).findById(any(UUID.class));
+            assertThat(restaurantGetData).hasSize(3);
 
-    }
+            verify(getRestaurantPort, times(1)).findAllBy(any(String.class), any(String.class), anyList());
 
-    @Test
-    void validateRestaurantIdEmpty(){
+        }
 
-        assertThatThrownBy(() -> {
-            getRestaurantdataService.findById(new Restaurant.RestaurantId(""));
-        })
-                .isInstanceOf(ConstraintViolationException.class)
-                .hasMessage("id: O campo deve ser do tipo UUID");
+        @Test
+        void validateEmpty(){
+            when(getRestaurantPort.findAllBy(any(String.class), any(String.class), anyList()))
+                    .thenReturn(new ArrayList<Restaurant>());
 
-        verify(getRestaurantPort, times(0)).findById(any(UUID.class));
+
+            assertThatThrownBy(() -> {
+                getRestaurantdataService.findAllBy("Dio Mio", "Rua", new ArrayList<>());
+            })
+                    .isInstanceOf(RestaurantNotFoundException.class)
+                    .hasMessage("Restaurante(s) não existe!");
+
+            verify(getRestaurantPort, times(1)).findAllBy(any(String.class), any(String.class), anyList());
+        }
+
+
 
     }
 

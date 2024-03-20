@@ -98,29 +98,23 @@ public class Restaurant {
         LocalTime end;
     }
 
-    public Restaurant(String name, Address address) {
+    public Restaurant(String name, Address address, List<OpeningHour> openingHours, List<Cuisine> cuisines, Integer tables) {
         this.name = name;
         this.address = address;
 
-        validate(this);
 
         this.restaurantId = new RestaurantId(UUID.randomUUID().toString());
         this.register = LocalDateTime.now();
 
-        this.openingHours = new ArrayList<>();
-        for (DayOfWeek dayOfWeek : DayOfWeek.values()) {
-            LocalTime start = LocalTime.of(9, 0);
-            LocalTime end = LocalTime.of(18, 0);
-            openingHours.add(new OpeningHour(dayOfWeek, start, end));
-        }
+        this.openingHours = openingHours;
+        this.cuisines = cuisines;
 
-        this.cuisines = new ArrayList<>();
+        this.tables = tables;
+        validate(this);
 
-        this.tables = 0;
         this.stateChange = Boolean.FALSE;
 
     }
-
 
     public static Restaurant of(String restaurantId, String name, Address address, LocalDateTime register, List<OpeningHour> openingHours, Integer numberOfTables, List<Cuisine> cuisines){
         return new Restaurant(new RestaurantId(restaurantId), name, address, register, openingHours, numberOfTables, cuisines, Boolean.FALSE);

@@ -108,7 +108,27 @@ class RestaurantPersistenceAdapterTest {
 
         }
 
+
+
     }
 
+    @Nested
+    class FindAllBy {
+
+        @Test
+        void findByAllByNameSucess(){
+
+            var restaurant = GenerateData.createRestaurant();
+            restaurantPersistenceAdapter.create(restaurant);
+
+            var restaurants = restaurantPersistenceAdapter.findAllBy(restaurant.getName(), "", null);
+
+            assertThat(restaurants).hasSize(1);
+
+
+
+        }
+
+    }
 
 }

@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 				title = "Tech Challenge 3 - Restaurant API",
 				version = "1.0",
 				description = "Api of Restaurant to Tech Challenge 3 - Pos Tech FIAP",
-				license = @License(name = "Apache 2.0", url = "http://foo.bar")
+				license = @License(name = "Apache 2.0")
 
 		)
 )

@@ -125,8 +125,6 @@ class RestaurantPersistenceAdapterTest {
 
             assertThat(restaurants).hasSize(1);
 
-
-
         }
 
     }

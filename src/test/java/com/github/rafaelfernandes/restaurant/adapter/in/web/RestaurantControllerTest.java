@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -160,6 +161,51 @@ class RestaurantControllerTest {
 
         }
 
+
+    }
+
+    @Nested
+    class FindAllBy {
+
+        @Test
+        void validateNotFound() throws Exception {
+
+            when(getRestaurantUseCase.findAllBy(any(String.class), any(String.class), anyList()))
+                    .thenThrow(RestaurantNotFoundException.class);
+
+            mockMvc.perform(
+                            get("/restaurants/")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.errors").value("Restaurante(s) não existe!"))
+            ;
+        }
+
+        @Test
+        void validateFound() throws Exception {
+
+            var restaurant = Optional.of(GenerateData.createRestaurant());
+
+            when(getRestaurantUseCase.findById(any(Restaurant.RestaurantId.class)))
+                    .thenReturn(restaurant);
+
+            mockMvc.perform(
+                            get("/restaurants/e903732e-9d20-4023-a71a-5c761253fc1c")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(restaurant.get().getRestaurantId().id().toString()))
+                    .andExpect(jsonPath("$.name").value(restaurant.get().getName()))
+                    .andExpect(jsonPath("$.address.street").value(restaurant.get().getAddress().getStreet()))
+                    .andExpect(jsonPath("$.address.number").value(restaurant.get().getAddress().getNumber()))
+                    .andExpect(jsonPath("$.address.addittionalDetails").value(restaurant.get().getAddress().getAddittionalDetails()))
+                    .andExpect(jsonPath("$.address.neighborhood").value(restaurant.get().getAddress().getNeighborhood()))
+                    .andExpect(jsonPath("$.address.city").value(restaurant.get().getAddress().getCity()))
+                    .andExpect(jsonPath("$.address.state").value(restaurant.get().getAddress().getState()))
+            ;
+
+        }
 
     }
 

@@ -1,14 +1,13 @@
 package com.github.rafaelfernandes.restaurant.adapter.in.web;
 
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
-import com.github.rafaelfernandes.restaurant.adapter.in.web.response.AddressResponse;
-import com.github.rafaelfernandes.restaurant.adapter.in.web.response.RestaurantError;
-import com.github.rafaelfernandes.restaurant.adapter.in.web.response.RestaurantResponse;
+import com.github.rafaelfernandes.restaurant.adapter.in.web.response.*;
 import com.github.rafaelfernandes.restaurant.application.port.in.*;
 import com.github.rafaelfernandes.restaurant.common.annotations.WebAdapter;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,6 +24,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.DayOfWeek;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @WebAdapter
@@ -46,8 +48,8 @@ public class RestaurantController {
             path = "/",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Void> create(
-            @RequestBody final RestaurantRequest request, UriComponentsBuilder uriComponentsBuilder) {
+    ResponseEntity<Void> createNew(
+            @Parameter @RequestBody final RestaurantRequest request, UriComponentsBuilder uriComponentsBuilder) {
 
         var addressModel = new Restaurant.Address(
                 request.address().street(),
@@ -122,6 +124,47 @@ public class RestaurantController {
 
         var restaurantData = getRestaurantUseCase.findById(restaurantIdModel);
 
+        var response = getRestaurantResponse(restaurantData);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+
+
+    }
+
+
+
+    @GetMapping(path = "/",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<List<RestaurantResponse>> getAllBy(@RequestParam String name, @RequestParam String location, @RequestParam List<String> cuisines){
+
+        var cuisinesEnum = cuisines.stream()
+                .map(Cuisine::valueOf)
+                .toList();
+
+        var restaurants = getRestaurantUseCase.findAllBy(name, location, cuisinesEnum);
+
+        var restaurantsData = restaurants.stream()
+                .map(RestaurantController::getRestaurantResponse)
+                .toList();
+
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(restaurantsData);
+
+
+
+    }
+
+    private static RestaurantResponse getRestaurantResponse(Restaurant restaurant){
+        return getRestaurantResponse(Optional.ofNullable(restaurant));
+    }
+
+    private static RestaurantResponse getRestaurantResponse(Optional<Restaurant> restaurantData) {
+
         var addressResponse = new AddressResponse(
                 restaurantData.get().getAddress().getStreet(),
                 restaurantData.get().getAddress().getNumber(),
@@ -131,18 +174,33 @@ public class RestaurantController {
                 restaurantData.get().getAddress().getState()
         );
 
-        var response = new RestaurantResponse(
+
+
+        var openingHoursResponses = restaurantData.get().getOpeningHours().stream()
+                .map(openingHour -> new OpeningHourResponse(
+                        openingHour.getDayOfWeek(),
+                        openingHour.getStart(),
+                        openingHour.getEnd()
+                ))
+                .toList();
+
+        var cuisineResponses = restaurantData.get().getCuisines().stream()
+                .map(cuisine -> new CuisineResponse(cuisine.getCuisine()))
+                .toList();
+
+        return new RestaurantResponse(
                 UUID.fromString(restaurantData.get().getRestaurantId().id()),
                 restaurantData.get().getName(),
-                addressResponse
+                addressResponse,
+                restaurantData.get().getTables(),
+                openingHoursResponses,
+                cuisineResponses
         );
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(response);
-
-
     }
+
+
+
 
 
 }

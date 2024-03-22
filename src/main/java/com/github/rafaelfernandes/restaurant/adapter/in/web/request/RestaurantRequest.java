@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
-@Schema(name = "Restaurant", description = "Data of restaurant")
+@Schema(name = "RestaurantRequest", description = "Data of restaurant")
 public record RestaurantRequest(
 
         @Schema(description = "Name of restaurant")

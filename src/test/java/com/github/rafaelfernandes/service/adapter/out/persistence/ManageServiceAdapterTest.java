@@ -70,7 +70,7 @@ class ManageServiceAdapterTest {
     @Test
     public void testSave() {
         // Arrange
-        Restaurant restaurant = Mockito.mock(Restaurant.class);
+        Restaurant.RestaurantId restaurantId = Mockito.mock(Restaurant.RestaurantId.class);
         Restaurant.OpeningHour openingHour = new Restaurant.OpeningHour("Monday", LocalTime.of(8, 0), LocalTime.of(18, 0));
         LocalDate date = LocalDate.now();
         Integer tables = 10;
@@ -80,7 +80,7 @@ class ManageServiceAdapterTest {
         when(serviceRepository.save(any(ServiceJpaEntity.class))).thenReturn(savedEntity);
 
         // Act
-        Service savedService = manageServiceAdapter.save(restaurant, openingHour, date, tables);
+        Service savedService = manageServiceAdapter.save(restaurantId, openingHour, date, tables);
 
         // Assert
         assertNotNull(savedService);
@@ -89,7 +89,7 @@ class ManageServiceAdapterTest {
         assertNotNull(savedService.getOpeningHour());
         assertNotNull(savedService.getDate());
         assertNotNull(savedService.getTables());
-        assertEquals(restaurant.getRestaurantId().id(), savedService.getRestaurantId().id());
+        assertEquals(restaurantId.id(), savedService.getRestaurantId().id());
         assertEquals(openingHour.getDayOfWeek(), savedService.getOpeningHour().getDayOfWeek());
         assertEquals(openingHour.getStart(), savedService.getOpeningHour().getStart());
         assertEquals(openingHour.getEnd(), savedService.getOpeningHour().getEnd());

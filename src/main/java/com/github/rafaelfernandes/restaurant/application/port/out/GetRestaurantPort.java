@@ -1,8 +1,7 @@
 package com.github.rafaelfernandes.restaurant.application.port.out;
 
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
-import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
-import com.github.rafaelfernandes.restaurant.common.enums.OrderBy;
+import com.github.rafaelfernandes.common.enums.Cuisine;
 
 import java.util.List;
 import java.util.Optional;

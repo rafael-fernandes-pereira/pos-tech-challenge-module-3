@@ -1,4 +1,4 @@
-package com.github.rafaelfernandes.restaurant.common.enums;
+package com.github.rafaelfernandes.common.enums;
 
 import lombok.Getter;
 

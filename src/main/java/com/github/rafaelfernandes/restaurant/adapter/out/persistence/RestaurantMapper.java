@@ -1,10 +1,8 @@
 package com.github.rafaelfernandes.restaurant.adapter.out.persistence;
 
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
-import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
 import org.springframework.stereotype.Component;
 
-import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

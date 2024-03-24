@@ -1,4 +1,4 @@
-package com.github.rafaelfernandes.restaurant;
+package com.github.rafaelfernandes;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;

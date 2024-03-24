@@ -7,7 +7,7 @@ import com.github.rafaelfernandes.restaurant.adapter.in.web.request.CuisineReque
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.OpeningHourRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
-import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
+import com.github.rafaelfernandes.common.enums.Cuisine;
 import net.datafaker.Faker;
 
 import java.time.DayOfWeek;

@@ -1,8 +1,8 @@
 package com.github.rafaelfernandes.restaurant.adapter.in.web;
 
 import com.github.rafaelfernandes.restaurant.adapter.in.web.response.RestaurantError;
-import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicateException;
-import com.github.rafaelfernandes.restaurant.common.exception.RestaurantNotFoundException;
+import com.github.rafaelfernandes.common.exception.RestaurantDuplicateException;
+import com.github.rafaelfernandes.common.exception.RestaurantNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

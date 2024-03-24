@@ -1,4 +1,4 @@
-package com.github.rafaelfernandes.restaurant.common.annotations;
+package com.github.rafaelfernandes.common.annotations;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;

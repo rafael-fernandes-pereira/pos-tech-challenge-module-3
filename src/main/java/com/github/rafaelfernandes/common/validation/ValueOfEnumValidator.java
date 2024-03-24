@@ -1,4 +1,4 @@
-package com.github.rafaelfernandes.restaurant.common.validation;
+package com.github.rafaelfernandes.common.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

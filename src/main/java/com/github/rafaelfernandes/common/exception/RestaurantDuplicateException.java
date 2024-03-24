@@ -1,4 +1,4 @@
-package com.github.rafaelfernandes.restaurant.common.exception;
+package com.github.rafaelfernandes.common.exception;
 
 public class RestaurantDuplicateException extends RuntimeException{
 

@@ -1,7 +1,7 @@
 package com.github.rafaelfernandes.restaurant.application.domain.model;
 
-import com.github.rafaelfernandes.restaurant.common.enums.State;
-import com.github.rafaelfernandes.restaurant.common.validation.ValueOfEnum;
+import com.github.rafaelfernandes.common.enums.State;
+import com.github.rafaelfernandes.common.validation.ValueOfEnum;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -14,11 +14,10 @@ import org.hibernate.validator.constraints.Length;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.github.rafaelfernandes.restaurant.common.validation.Validation.validate;
+import static com.github.rafaelfernandes.common.validation.Validation.validate;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -107,7 +106,7 @@ public class Restaurant {
     @Value
     public static class Cuisine {
         @NotEmpty(message = "O campo deve ser preenchido")
-        @ValueOfEnum(enumClass = com.github.rafaelfernandes.restaurant.common.enums.Cuisine.class)
+        @ValueOfEnum(enumClass = com.github.rafaelfernandes.common.enums.Cuisine.class)
         String cuisine;
     }
 

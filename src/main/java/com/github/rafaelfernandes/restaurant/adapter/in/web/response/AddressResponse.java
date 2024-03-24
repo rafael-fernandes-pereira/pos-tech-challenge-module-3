@@ -1,6 +1,6 @@
 package com.github.rafaelfernandes.restaurant.adapter.in.web.response;
 
-import com.github.rafaelfernandes.restaurant.common.enums.State;
+import com.github.rafaelfernandes.common.enums.State;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record AddressResponse(

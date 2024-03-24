@@ -1,6 +1,6 @@
 package com.github.rafaelfernandes.restaurant.application.port.in;
 
-import com.github.rafaelfernandes.restaurant.common.validation.Validation;
+import com.github.rafaelfernandes.common.validation.Validation;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;

@@ -1,13 +1,11 @@
 package com.github.rafaelfernandes.restaurant.domain;
 
-import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import util.GenerateData;
 import net.datafaker.Faker;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

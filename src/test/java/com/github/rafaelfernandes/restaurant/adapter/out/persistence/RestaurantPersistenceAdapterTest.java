@@ -1,6 +1,6 @@
 package com.github.rafaelfernandes.restaurant.adapter.out.persistence;
 
-import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicateException;
+import com.github.rafaelfernandes.common.exception.RestaurantDuplicateException;
 import util.GenerateData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;

@@ -3,7 +3,7 @@ package com.github.rafaelfernandes.restaurant.application.domain.service;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.in.SaveDataRestaurantUseCase;
 import com.github.rafaelfernandes.restaurant.application.port.out.CreateRestaurantPort;
-import com.github.rafaelfernandes.restaurant.common.annotations.UseCase;
+import com.github.rafaelfernandes.common.annotations.UseCase;
 import lombok.RequiredArgsConstructor;
 
 

@@ -3,10 +3,9 @@ package com.github.rafaelfernandes.restaurant.application.domain.service;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.in.GetRestaurantUseCase;
 import com.github.rafaelfernandes.restaurant.application.port.out.GetRestaurantPort;
-import com.github.rafaelfernandes.restaurant.common.annotations.UseCase;
-import com.github.rafaelfernandes.restaurant.common.enums.Cuisine;
-import com.github.rafaelfernandes.restaurant.common.enums.OrderBy;
-import com.github.rafaelfernandes.restaurant.common.exception.RestaurantNotFoundException;
+import com.github.rafaelfernandes.common.annotations.UseCase;
+import com.github.rafaelfernandes.common.enums.Cuisine;
+import com.github.rafaelfernandes.common.exception.RestaurantNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
 

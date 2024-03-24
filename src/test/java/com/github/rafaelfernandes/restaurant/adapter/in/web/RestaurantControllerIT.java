@@ -5,9 +5,8 @@ import com.github.rafaelfernandes.restaurant.adapter.in.web.request.CuisineReque
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.OpeningHourRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
 import com.github.rafaelfernandes.restaurant.adapter.out.persistence.RestaurantRepository;
-import com.github.rafaelfernandes.restaurant.common.enums.State;
+import com.github.rafaelfernandes.common.enums.State;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import util.GenerateData;
 import com.jayway.jsonpath.DocumentContext;
@@ -26,7 +25,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;

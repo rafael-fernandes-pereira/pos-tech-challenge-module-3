@@ -1,4 +1,4 @@
-package com.github.rafaelfernandes.restaurant.common.annotations;
+package com.github.rafaelfernandes.common.annotations;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Component
-public @interface WebAdapter {
+public @interface UseCase {
 
   /**
    * The id may indicate a suggestion for a logical component name,

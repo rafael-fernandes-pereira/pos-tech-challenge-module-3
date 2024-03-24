@@ -1,7 +1,7 @@
 package com.github.rafaelfernandes.restaurant.application.port.out;
 
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
-import com.github.rafaelfernandes.restaurant.common.exception.RestaurantDuplicateException;
+import com.github.rafaelfernandes.common.exception.RestaurantDuplicateException;
 
 public interface CreateRestaurantPort {
 

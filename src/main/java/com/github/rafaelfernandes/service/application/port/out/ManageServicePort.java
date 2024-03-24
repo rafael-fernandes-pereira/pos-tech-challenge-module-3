@@ -7,9 +7,9 @@ import java.time.LocalDate;
 
 public interface ManageServicePort {
 
-    Boolean existsReservation(Restaurant.RestaurantId restaurantId, Restaurant.OpeningHour openingHour, LocalDate date);
+    Boolean existsService(Restaurant.RestaurantId restaurantId, Restaurant.OpeningHour openingHour, LocalDate date);
 
-    Service save(Restaurant restaurant, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables);
+    Service save(Restaurant.RestaurantId restaurantId, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables);
 
     Service details(Service.ReservationId reservationId);
 

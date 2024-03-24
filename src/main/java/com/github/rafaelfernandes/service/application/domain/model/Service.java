@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static com.github.rafaelfernandes.common.validation.Validation.validate;
 
@@ -46,5 +47,15 @@ public class Service {
         this.date = date;
         this.tables = tables;
         validate(this);
+    }
+
+    public Service(Restaurant.RestaurantId restaurantId, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables){
+        this.restaurantId = restaurantId;
+        this.openingHour = openingHour;
+        this.date = date;
+        this.tables = tables;
+        validate(this);
+        this.reservationId = new ReservationId(UUID.randomUUID().toString());
+
     }
 }

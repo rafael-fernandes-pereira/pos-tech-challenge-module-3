@@ -11,17 +11,17 @@ import java.time.LocalDate;
 
 @UseCase
 @RequiredArgsConstructor
-public class ManageServiceUseCase implements com.github.rafaelfernandes.service.application.port.in.ManageServiceUseCase {
+public class ManageServiceService implements com.github.rafaelfernandes.service.application.port.in.ManageServiceUseCase {
 
     private final ManageServicePort manageReservationPort;
 
     @Override
-    public Service.ReservationId create(Restaurant restaurant, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables) {
-        var exists = manageReservationPort.existsReservation(restaurant.getRestaurantId(), openingHour, date);
+    public Service.ReservationId create(Restaurant.RestaurantId restaurantId, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables) {
+        var exists = manageReservationPort.existsService(restaurantId, openingHour, date);
 
         if (exists) throw new ReservationDuplicateException();
 
-        var resservation = manageReservationPort.save(restaurant, openingHour, date, tables);
+        var resservation = manageReservationPort.save(restaurantId, openingHour, date, tables);
 
         return resservation.getReservationId();
 
@@ -29,7 +29,7 @@ public class ManageServiceUseCase implements com.github.rafaelfernandes.service.
 
     @Override
     public Service details(Service.ReservationId reservationId) {
-        return null;
+        return manageReservationPort.details(reservationId);
     }
 
     @Override

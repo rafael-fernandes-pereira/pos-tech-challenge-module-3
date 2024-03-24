@@ -127,8 +127,6 @@ public class RestaurantController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
-
-
     }
 
 

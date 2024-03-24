@@ -1,4 +1,4 @@
-package com.github.rafaelfernandes.reservation.application.domain.model;
+package com.github.rafaelfernandes.service.application.domain.model;
 
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import jakarta.validation.ConstraintViolationException;
@@ -11,7 +11,7 @@ import java.time.LocalTime;
 import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.Mockito;
 
-class ReservationTest {
+class ServiceTest {
 
 
     @Test
@@ -25,7 +25,7 @@ class ReservationTest {
         Integer missingTables = 5;
 
         // Act
-        Reservation reservation = new Reservation(reservationId, restaurantId, openingHour, date, missingTables);
+        Service reservation = new Service(reservationId, restaurantId, openingHour, date, missingTables);
 
         // Assert
         assertNotNull(reservation);
@@ -46,7 +46,7 @@ class ReservationTest {
         Integer missingTables = 1;
 
         assertThrows(ConstraintViolationException.class, () -> {
-            new Reservation(reservationId, restaurantId, openingHour, date, missingTables);
+            new Service(reservationId, restaurantId, openingHour, date, missingTables);
         });
     }
 
@@ -59,7 +59,7 @@ class ReservationTest {
         Integer missingTables = 0;
 
         assertThrows(ConstraintViolationException.class, () -> {
-            new Reservation(reservationId, restaurantId, openingHour, date, missingTables);
+            new Service(reservationId, restaurantId, openingHour, date, missingTables);
         });
     }
 

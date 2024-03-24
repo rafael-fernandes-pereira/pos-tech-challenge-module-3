@@ -1,9 +1,9 @@
-package com.github.rafaelfernandes.reservation.application.domain.service;
+package com.github.rafaelfernandes.service.application.domain.service;
 
 import com.github.rafaelfernandes.common.annotations.UseCase;
 import com.github.rafaelfernandes.common.exception.ReservationDuplicateException;
-import com.github.rafaelfernandes.reservation.application.domain.model.Reservation;
-import com.github.rafaelfernandes.reservation.application.port.out.ManageReservationPort;
+import com.github.rafaelfernandes.service.application.domain.model.Service;
+import com.github.rafaelfernandes.service.application.port.out.ManageServicePort;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import lombok.RequiredArgsConstructor;
 
@@ -11,12 +11,12 @@ import java.time.LocalDate;
 
 @UseCase
 @RequiredArgsConstructor
-public class ManageReservationUseCase implements com.github.rafaelfernandes.reservation.application.port.in.ManageReservationUseCase {
+public class ManageServiceUseCase implements com.github.rafaelfernandes.service.application.port.in.ManageServiceUseCase {
 
-    private final ManageReservationPort manageReservationPort;
+    private final ManageServicePort manageReservationPort;
 
     @Override
-    public Reservation.ReservationId create(Restaurant restaurant, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables) {
+    public Service.ReservationId create(Restaurant restaurant, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables) {
         var exists = manageReservationPort.existsReservation(restaurant.getRestaurantId(), openingHour, date);
 
         if (exists) throw new ReservationDuplicateException();
@@ -28,12 +28,12 @@ public class ManageReservationUseCase implements com.github.rafaelfernandes.rese
     }
 
     @Override
-    public Reservation details(Reservation.ReservationId reservationId) {
+    public Service details(Service.ReservationId reservationId) {
         return null;
     }
 
     @Override
-    public Boolean update(Reservation reservation) {
+    public Boolean update(Service reservation) {
         return null;
     }
 }

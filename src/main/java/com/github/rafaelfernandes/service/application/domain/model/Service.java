@@ -1,4 +1,4 @@
-package com.github.rafaelfernandes.reservation.application.domain.model;
+package com.github.rafaelfernandes.service.application.domain.model;
 
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import jakarta.validation.constraints.Min;
@@ -13,7 +13,7 @@ import static com.github.rafaelfernandes.common.validation.Validation.validate;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Reservation  {
+public class Service {
     private final ReservationId reservationId;
 
     @NotNull
@@ -39,7 +39,7 @@ public class Reservation  {
         }
     }
 
-    public Reservation(String reservationId, Restaurant.RestaurantId restaurantId, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables) {
+    public Service(String reservationId, Restaurant.RestaurantId restaurantId, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables) {
         this.reservationId = new ReservationId(reservationId);
         this.restaurantId = restaurantId;
         this.openingHour = openingHour;

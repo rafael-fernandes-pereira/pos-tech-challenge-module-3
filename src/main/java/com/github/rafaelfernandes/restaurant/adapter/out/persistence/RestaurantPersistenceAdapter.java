@@ -1,7 +1,6 @@
 package com.github.rafaelfernandes.restaurant.adapter.out.persistence;
 
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
-import com.github.rafaelfernandes.restaurant.application.port.out.CreateRestaurantPort;
 import com.github.rafaelfernandes.restaurant.application.port.out.GetRestaurantPort;
 import com.github.rafaelfernandes.common.annotations.PersistenceAdapter;
 import com.github.rafaelfernandes.common.enums.Cuisine;

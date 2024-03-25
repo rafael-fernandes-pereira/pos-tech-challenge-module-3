@@ -85,6 +85,7 @@ class RestaurantPersistenceAdapterTest {
             var restaurantFound = restaurantRepository.findById(restaurantIdUUID);
 
             assertThat(restaurantFound).isPresent();
+            assertThat(restaurantFound.get().getFullSearch()).isNotEmpty();
 
         }
 

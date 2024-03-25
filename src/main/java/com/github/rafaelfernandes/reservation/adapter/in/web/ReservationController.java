@@ -7,6 +7,7 @@ import com.github.rafaelfernandes.service.adapter.in.web.response.ServiceRespons
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 @WebAdapter
 @RestController
@@ -53,7 +56,7 @@ public class ReservationController {
     @GetMapping(path = "/{reservationId}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<ServiceResponse> getBydId(@PathVariable final String reservationId){
+    ResponseEntity<ReservationResponse> getBydId(@PathVariable final String reservationId){
         return null;
     }
 
@@ -72,7 +75,7 @@ public class ReservationController {
     @GetMapping(path = "/{code}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<ServiceResponse> getByCode(@PathVariable final String code){
+    ResponseEntity<ReservationResponse> getByCode(@PathVariable final String code){
         return null;
     }
 
@@ -94,6 +97,29 @@ public class ReservationController {
     ResponseEntity<Void> delete(@PathVariable final String reservationId){
         return null;
     }
+
+    @Operation(summary = "Get all reservations by Service ID")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    description = "Success", responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(
+                                schema = @Schema(implementation = ReservationResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(description = "Bad request", responseCode = "400"),
+            @ApiResponse(description = "Not found", responseCode = "404")
+    })
+    @GetMapping(path = "/{serviceId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<List<ReservationResponse>> getBydServiceId(@PathVariable final String serviceId){
+        return null;
+    }
+
+
 
 
 

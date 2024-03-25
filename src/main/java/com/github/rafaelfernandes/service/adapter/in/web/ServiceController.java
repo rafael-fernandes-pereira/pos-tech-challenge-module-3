@@ -1,18 +1,18 @@
 package com.github.rafaelfernandes.service.adapter.in.web;
 
 import com.github.rafaelfernandes.common.annotations.WebAdapter;
-import com.github.rafaelfernandes.restaurant.adapter.in.web.response.RestaurantError;
-import com.github.rafaelfernandes.restaurant.adapter.in.web.response.RestaurantResponse;
+import com.github.rafaelfernandes.reservation.adapter.in.web.request.ReservationResponse;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
+import com.github.rafaelfernandes.review.adapter.in.web.response.ReviewResponse;
 import com.github.rafaelfernandes.service.adapter.in.web.request.ServiceRequest;
 import com.github.rafaelfernandes.service.adapter.in.web.response.OpeningHourServiceResponse;
 import com.github.rafaelfernandes.service.adapter.in.web.response.ServiceResponse;
 import com.github.rafaelfernandes.service.application.domain.model.Service;
-import com.github.rafaelfernandes.service.application.domain.service.ManageServiceService;
 import com.github.rafaelfernandes.service.application.port.in.ManageServiceUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,12 +27,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/services")
-@Tag(name = "Service", description = "Service Hour Endpoint")
+@Tag(name = "02 - Service", description = "Service Hour Endpoint")
 public class ServiceController {
 
     private final ManageServiceUseCase useCase;
@@ -134,6 +135,32 @@ public class ServiceController {
         return null;
 
     }
+
+    @Operation(summary = "Get all reservations by Service ID")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    description = "Success", responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ReservationResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(description = "Bad request", responseCode = "400"),
+            @ApiResponse(description = "Not found", responseCode = "404")
+    })
+    @GetMapping(path = "/{serviceId}/reservations",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<List<ReservationResponse>> getAllReservationsByServiceId(@PathVariable final String serviceId){
+        return null;
+    }
+
+
+
+
+
 
 
 

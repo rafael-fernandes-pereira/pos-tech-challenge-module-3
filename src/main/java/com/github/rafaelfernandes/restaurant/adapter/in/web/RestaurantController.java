@@ -1,14 +1,17 @@
 package com.github.rafaelfernandes.restaurant.adapter.in.web;
 
+import com.github.rafaelfernandes.reservation.adapter.in.web.request.ReservationResponse;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.response.*;
 import com.github.rafaelfernandes.restaurant.application.port.in.*;
 import com.github.rafaelfernandes.common.annotations.WebAdapter;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.common.enums.Cuisine;
+import com.github.rafaelfernandes.review.adapter.in.web.response.ReviewResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,7 +34,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/restaurants")
-@Tag(name = "Restaurant", description = "Restaurant Endpoint")
+@Tag(name = "01 - Restaurant", description = "Restaurant Endpoint")
 public class RestaurantController {
 
     private final SaveDataRestaurantUseCase saveDataRestaurantUseCase;
@@ -195,9 +198,26 @@ public class RestaurantController {
 
     }
 
-
-
-
+    @Operation(summary = "Get all reviews by Restaurant ID")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    description = "Success", responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ReviewResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(description = "Bad request", responseCode = "400"),
+            @ApiResponse(description = "Not found", responseCode = "404")
+    })
+    @GetMapping(path = "/{restaurantId}/reviews",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<List<ReviewResponse>> getAllReviewsByServiceId(@PathVariable final String restaurantId){
+        return null;
+    }
 
 }
 

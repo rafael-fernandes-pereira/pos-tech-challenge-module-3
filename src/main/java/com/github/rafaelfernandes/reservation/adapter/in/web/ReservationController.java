@@ -3,11 +3,9 @@ package com.github.rafaelfernandes.reservation.adapter.in.web;
 import com.github.rafaelfernandes.common.annotations.WebAdapter;
 import com.github.rafaelfernandes.reservation.adapter.in.web.request.ReservationRequest;
 import com.github.rafaelfernandes.reservation.adapter.in.web.request.ReservationResponse;
-import com.github.rafaelfernandes.service.adapter.in.web.response.ServiceResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,13 +17,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
 
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/reservations")
-@Tag(name = "Reservations", description = "Restaurant Endpoint")
+@Tag(name = "03 - Reservations", description = "Reservations Endpoint")
 public class ReservationController {
 
     @Operation(summary = "Create a Reservation")
@@ -50,8 +47,16 @@ public class ReservationController {
                             schema = @Schema(implementation = ReservationResponse.class)
                     )
             ),
-            @ApiResponse(description = "Bad request", responseCode = "400"),
-            @ApiResponse(description = "Not found", responseCode = "404")
+            @ApiResponse(description = "Bad request", responseCode = "400",
+                    content = @Content(
+                            schema = @Schema(implementation = Void.class)
+                    )
+            ),
+            @ApiResponse(description = "Not found", responseCode = "404",
+                    content = @Content(
+                            schema = @Schema(implementation = Void.class)
+                    )
+            )
     })
     @GetMapping(path = "/{reservationId}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -69,8 +74,16 @@ public class ReservationController {
                             schema = @Schema(implementation = ReservationResponse.class)
                     )
             ),
-            @ApiResponse(description = "Bad request", responseCode = "400"),
-            @ApiResponse(description = "Not found", responseCode = "404")
+            @ApiResponse(description = "Bad request", responseCode = "400",
+                    content = @Content(
+                            schema = @Schema(implementation = Void.class)
+                    )
+            ),
+            @ApiResponse(description = "Not found", responseCode = "404",
+                    content = @Content(
+                            schema = @Schema(implementation = Void.class)
+                    )
+            ),
     })
     @GetMapping(path = "/{code}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -81,13 +94,7 @@ public class ReservationController {
 
     @Operation(summary = "Delete reservation byId")
     @ApiResponses(value = {
-            @ApiResponse(
-                    description = "Success", responseCode = "200",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ReservationResponse.class)
-                    )
-            ),
+            @ApiResponse(description = "Success", responseCode = "200"),
             @ApiResponse(description = "Bad request", responseCode = "400"),
             @ApiResponse(description = "Not found", responseCode = "404")
     })
@@ -98,26 +105,22 @@ public class ReservationController {
         return null;
     }
 
-    @Operation(summary = "Get all reservations by Service ID")
+    @Operation(summary = "Use reservation by Id")
     @ApiResponses(value = {
-            @ApiResponse(
-                    description = "Success", responseCode = "200",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(
-                                schema = @Schema(implementation = ReservationResponse.class)
-                            )
-                    )
-            ),
+            @ApiResponse(description = "Success", responseCode = "200"),
             @ApiResponse(description = "Bad request", responseCode = "400"),
             @ApiResponse(description = "Not found", responseCode = "404")
     })
-    @GetMapping(path = "/{serviceId}",
+    @PutMapping(path = "/{reservationId}/use",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<List<ReservationResponse>> getBydServiceId(@PathVariable final String serviceId){
+    ResponseEntity<Void> use(@PathVariable final String reservationId){
         return null;
     }
+
+
+
+
 
 
 

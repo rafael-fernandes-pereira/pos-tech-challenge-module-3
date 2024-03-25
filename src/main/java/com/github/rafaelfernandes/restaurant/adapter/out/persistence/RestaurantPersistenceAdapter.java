@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class RestaurantPersistenceAdapter implements ManageRestaurantPort, GetRestaurantPort {
+public class RestaurantPersistenceAdapter implements ManageRestaurantPort {
 
     private final RestaurantRepository restaurantRepository;
     private final RestaurantMapper restaurantMapper;

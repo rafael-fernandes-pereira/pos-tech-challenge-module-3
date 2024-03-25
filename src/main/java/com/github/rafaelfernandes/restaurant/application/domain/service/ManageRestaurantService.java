@@ -41,6 +41,12 @@ public class ManageRestaurantService implements ManageRestaurantUseCase {
 
     @Override
     public List<Restaurant> findAllBy(String name, String location, List<Cuisine> cuisines) {
-        return null;
+
+        var list = manageRestaurantPort.findAllBy(name, location, cuisines);
+
+        if (list.isEmpty()) throw new RestaurantNotFoundException();
+
+        return list;
+
     }
 }

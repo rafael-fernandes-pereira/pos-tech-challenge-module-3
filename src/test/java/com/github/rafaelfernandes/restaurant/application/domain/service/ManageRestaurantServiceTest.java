@@ -5,15 +5,18 @@ import com.github.rafaelfernandes.common.exception.RestaurantNotFoundException;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.out.ManageRestaurantPort;
 import com.github.rafaelfernandes.service.application.domain.model.Service;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import util.GenerateData;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -116,7 +119,40 @@ class ManageRestaurantServiceTest {
 
     }
 
-    @Test
-    void findAllBy() {
+    @Nested
+    class FindAllBy {
+
+
+
+        @BeforeEach
+        void setUpFindAll(){
+
+
+
+        }
+
+        @Test
+        void findAllByName(){
+
+            // Arrange
+
+            var restaurant = GenerateData.createRestaurant();
+            var restaurants = new ArrayList<Restaurant>(){{
+               add(restaurant);
+            }};
+
+            when(port.findAllBy(anyString(), anyString(), anyList())).thenReturn(restaurants);
+
+            // Act
+
+            var list = service.findAllBy(restaurant.getName(), "", new ArrayList<>());
+
+            // Assert
+
+            assertThat(list).hasSize(1).contains(restaurant);
+            verify(port.findAllBy(any(), null, null), times(1));
+
+        }
+
     }
 }

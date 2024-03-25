@@ -38,7 +38,6 @@ import java.util.UUID;
 @Tag(name = "01 - Restaurant", description = "Restaurant Endpoint")
 public class RestaurantController {
 
-    private final GetRestaurantUseCase getRestaurantUseCase;
     private final ManageRestaurantUseCase useCase;
 
     @Operation(summary = "Create a Restaurant")
@@ -170,7 +169,7 @@ public class RestaurantController {
                 .map(Cuisine::valueOf)
                 .toList();
 
-        var restaurants = getRestaurantUseCase.findAllBy(name, location, cuisinesEnum);
+        var restaurants = useCase.findAllBy(name, location, cuisinesEnum);
 
         var restaurantsData = restaurants.stream()
                 .map(RestaurantController::getRestaurantResponse)

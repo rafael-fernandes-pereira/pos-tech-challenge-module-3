@@ -144,6 +144,7 @@ public class Restaurant {
 
     }
 
+
     public static Restaurant of(String restaurantId, String name, Address address, LocalDateTime register, List<OpeningHour> openingHours, Integer numberOfTables, List<Cuisine> cuisines){
         return new Restaurant(new RestaurantId(restaurantId), name, numberOfTables, register, address,  openingHours, cuisines);
     }

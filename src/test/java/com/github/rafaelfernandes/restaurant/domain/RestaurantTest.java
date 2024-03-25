@@ -6,34 +6,37 @@ import jakarta.validation.ValidationException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import util.GenerateData;
-import net.datafaker.Faker;
-import org.junit.jupiter.api.DisplayName;
+import org.mockito.Mockito;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RestaurantTest {
 
-    private static final Faker faker = new Faker(new Locale("pt", "BR"));
+public class RestaurantTest {
 
     String name = "A Oca";
 
-    Restaurant.Address address =  GenerateData.generateAddress();
+    Restaurant.Address address =  Mockito.mock(Restaurant.Address.class);
 
-    List<Restaurant.OpeningHour> openingHours = GenerateData.createDefaultOpeningHours();
+    List<Restaurant.OpeningHour> openingHours = new ArrayList<Restaurant.OpeningHour>(){{
+        add(Mockito.mock(Restaurant.OpeningHour.class));
+    }};
 
-    List<Restaurant.Cuisine> cuisines = GenerateData.generateCuisines();
+    List<Restaurant.Cuisine> cuisines = new ArrayList<Restaurant.Cuisine>(){{
+       add(Mockito.mock(Restaurant.Cuisine.class));
+    }};
+
+    Integer tables = 10;
 
     @Nested
     class Validate {
@@ -456,109 +459,91 @@ public class RestaurantTest {
     }
 
     @Nested
-    @DisplayName("Tests of Create method")
     class Create {
         @Test
-        void createRestaurantWithTables() {
-            String name = faker.restaurant().name();
+        void createSuccessRestaurant() {
 
+            var restaurant = new Restaurant(name, address, openingHours, cuisines, 10);
 
-            Restaurant.Address address = new Restaurant.Address(
-                    faker.address().streetAddress(),
-                    Integer.valueOf(faker.address().streetAddressNumber()),
-                    faker.address().secondaryAddress(),
-                    "Medicina",
-                    faker.address().city(),
-                    faker.address().stateAbbr());
+            assertThat(restaurant).isNotNull();
+            assertThat(restaurant.getRestaurantId()).isNotNull();
 
-            Restaurant restaurant = new Restaurant(name, address, openingHours, cuisines, 10);
+            assertThat(restaurant.getName()).isEqualTo(name);
 
-            assertNotNull(restaurant);
-            assertNotNull(restaurant.getRestaurantId());
-            assertEquals(name, restaurant.getName());
-            assertEquals(address, restaurant.getAddress());
-            assertNotNull(restaurant.getRegister());
-            assertNotNull(restaurant.getOpeningHours());
-            assertEquals(10, restaurant.getTables());
+            assertThat(restaurant.getAddress()).isEqualTo(address);
+            assertThat(restaurant.getAddress().getStreet()).isEqualTo(address.getStreet());
+            assertThat(restaurant.getAddress().getNumber()).isEqualTo(address.getNumber());
+            assertThat(restaurant.getAddress().getAddittionalDetails()).isEqualTo(address.getAddittionalDetails());
+            assertThat(restaurant.getAddress().getNeighborhood()).isEqualTo(address.getNeighborhood());
+            assertThat(restaurant.getAddress().getCity()).isEqualTo(address.getCity());
+            assertThat(restaurant.getAddress().getState()).isEqualTo(address.getState());
+
+            assertThat(restaurant.getOpeningHours()).isEqualTo(openingHours);
+
+            assertThat(restaurant.getCuisines()).isEqualTo(cuisines);
+
+            assertThat(restaurant.getTables()).isEqualTo(tables);
+
+            assertThat(restaurant.getRegister()).isNotNull();
         }
 
         @Test
-        void createRestaurantWithDefaultOpeningHours() {
-            String name = "Test Restaurant";
-            Restaurant.Address address = new Restaurant.Address(
-                    faker.address().streetAddress(),
-                    Integer.valueOf(faker.address().streetAddressNumber()),
-                    faker.address().secondaryAddress(),
-                    "Medicina",
-                    faker.address().city(),
-                    faker.address().stateAbbr());
+        void createInvalidRestaurant(){
 
-            Restaurant restaurant = new Restaurant(name, address, openingHours, cuisines, 10);
+            assertThatCode(() -> {
+                new Restaurant(name, address, openingHours, cuisines, 0);
+            })
+                .isInstanceOf(ValidationException.class)
+            ;
 
-            assertNotNull(restaurant.getOpeningHours());
-            assertEquals(DayOfWeek.values().length, restaurant.getOpeningHours().size());
-
-            for (Restaurant.OpeningHour openingHour : restaurant.getOpeningHours()) {
-                assertEquals(LocalTime.of(9, 0), openingHour.getStart());
-                assertEquals(LocalTime.of(18, 0), openingHour.getEnd());
-            }
         }
+
+
     }
 
     @Nested
-    @DisplayName("Tests of Of method")
     class Of {
 
 
         @Test
         void createRestaurantUsingOf() {
-            String restaurantId = UUID.randomUUID().toString();
-            String name = "Test Restaurant";
-            Restaurant.Address address = new Restaurant.Address(
-                    faker.address().streetAddress(),
-                    Integer.valueOf(faker.address().streetAddressNumber()),
-                    faker.address().secondaryAddress(),
-                    "Medicina",
-                    faker.address().city(),
-                    faker.address().stateAbbr());
-            LocalDateTime register = LocalDateTime.now();
-            List<Restaurant.OpeningHour> openingHours = GenerateData.createDefaultOpeningHours();
-            Integer numberOfTables = 5;
+            var restaurantId = UUID.randomUUID().toString();
 
-            Restaurant restaurant = Restaurant.of(restaurantId, name, address, register, openingHours, numberOfTables, null);
+            var register = LocalDateTime.now();
 
-            assertNotNull(restaurant);
-            assertEquals(restaurantId, restaurant.getRestaurantId().id());
-            assertEquals(name, restaurant.getName());
-            assertEquals(address, restaurant.getAddress());
-            assertEquals(register, restaurant.getRegister());
-            assertEquals(openingHours, restaurant.getOpeningHours());
-            assertEquals(numberOfTables, restaurant.getTables());
+            var restaurant = Restaurant.of(restaurantId, name, address, register, openingHours, tables, cuisines);
+
+            assertThat(restaurant).isNotNull();
+            assertThat(restaurant.getRestaurantId().id()).isEqualTo(restaurantId);
+
+            assertThat(restaurant.getName()).isEqualTo(name);
+
+            assertThat(restaurant.getAddress()).isEqualTo(address);
+            assertThat(restaurant.getAddress().getStreet()).isEqualTo(address.getStreet());
+            assertThat(restaurant.getAddress().getNumber()).isEqualTo(address.getNumber());
+            assertThat(restaurant.getAddress().getAddittionalDetails()).isEqualTo(address.getAddittionalDetails());
+            assertThat(restaurant.getAddress().getNeighborhood()).isEqualTo(address.getNeighborhood());
+            assertThat(restaurant.getAddress().getCity()).isEqualTo(address.getCity());
+            assertThat(restaurant.getAddress().getState()).isEqualTo(address.getState());
+
+            assertThat(restaurant.getOpeningHours()).isEqualTo(openingHours);
+
+            assertThat(restaurant.getCuisines()).isEqualTo(cuisines);
+
+            assertThat(restaurant.getTables()).isEqualTo(tables);
+
+            assertThat(restaurant.getRegister()).isNotNull();
         }
 
         @Test
-        void createRestaurantWithNullOpeningHours() {
-            String restaurantId = UUID.randomUUID().toString();
-            String name = "Test Restaurant";
-            Restaurant.Address address = new Restaurant.Address(
-                    faker.address().streetAddress(),
-                    Integer.valueOf(faker.address().streetAddressNumber()),
-                    faker.address().secondaryAddress(),
-                    "Medicina",
-                    faker.address().city(),
-                    faker.address().stateAbbr());
-            LocalDateTime register = LocalDateTime.now();
-            Integer numberOfTables = 5;
+        void createInvalidRestauratUsingOf(){
 
-            Restaurant restaurant = Restaurant.of(restaurantId, name, address, register, null, numberOfTables, null);
+            assertThatCode(() -> {
+                Restaurant.of("invalid-uuio", name, address, LocalDateTime.now(), openingHours, tables, cuisines);
+            })
+                    .isInstanceOf(ValidationException.class)
+            ;
 
-            assertNotNull(restaurant);
-            assertEquals(restaurantId, restaurant.getRestaurantId().id());
-            assertEquals(name, restaurant.getName());
-            assertEquals(address, restaurant.getAddress());
-            assertEquals(register, restaurant.getRegister());
-            assertNull(restaurant.getOpeningHours());
-            assertEquals(numberOfTables, restaurant.getTables());
         }
     }
 

@@ -20,25 +20,6 @@ public class GetRestaurantdataService implements GetRestaurantUseCase {
     private final GetRestaurantPort getRestaurantPort;
 
     @Override
-    public Optional<Restaurant> findById(Restaurant.RestaurantId restaurantId) {
-
-        if (StringUtils.hasText(restaurantId.id())){
-
-            var restarauntId = UUID.fromString(restaurantId.id());
-
-            var restaurant = getRestaurantPort.findById(restarauntId);
-
-            if (restaurant.isEmpty()) throw new RestaurantNotFoundException();
-
-            return restaurant;
-
-        }
-
-        throw new RestaurantNotFoundException();
-
-    }
-
-    @Override
     public List<Restaurant> findAllBy(String name, String location, List<Cuisine> cuisines) {
 
         var restaurants = getRestaurantPort.findAllBy(

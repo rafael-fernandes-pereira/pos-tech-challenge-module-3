@@ -124,7 +124,7 @@ public class RestaurantController {
 
         var restaurantIdModel = new Restaurant.RestaurantId(restaurantId);
 
-        var restaurantData = getRestaurantUseCase.findById(restaurantIdModel);
+        var restaurantData = useCase.findById(restaurantIdModel);
 
         var response = getRestaurantResponse(restaurantData);
 

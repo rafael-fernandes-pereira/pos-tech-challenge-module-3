@@ -94,29 +94,28 @@ class RestaurantPersistenceAdapterTest {
     @Nested
     class FindById {
 
-
         @Test
         void findSuccess(){
 
-            var restaurant = GenerateData.createRestaurant();
-            var restaurantId = restaurantPersistenceAdapter.create(restaurant);
+            var restaurantRequest = GenerateData.createRestaurant();
+            var restaurant = restaurantPersistenceAdapter.save(restaurantRequest);
 
-            var restaurantIdUUID = UUID.fromString(restaurantId.id());
-
-            var restaurantGet = restaurantPersistenceAdapter.findById(restaurantIdUUID);
+            var restaurantGet = restaurantPersistenceAdapter.findById(restaurant.getRestaurantId());
 
             assertThat(restaurantGet).isPresent();
-            assertThat(restaurantId).isEqualTo(restaurantGet.get().getRestaurantId());
-            assertThat(restaurant.getName()).isEqualTo(restaurantGet.get().getName());
-            assertThat(restaurant.getOpeningHours()).isEqualTo(restaurantGet.get().getOpeningHours());
-            assertThat(restaurant.getTables()).isEqualTo(restaurantGet.get().getTables());
-            assertThat(restaurant.getCuisines()).isEqualTo(restaurantGet.get().getCuisines());
+            assertThat(restaurant.getRestaurantId()).isEqualTo(restaurantGet.get().getRestaurantId());
+            assertThat(restaurantRequest.getName()).isEqualTo(restaurantGet.get().getName());
+            assertThat(restaurantRequest.getOpeningHours()).isEqualTo(restaurantGet.get().getOpeningHours());
+            assertThat(restaurantRequest.getTables()).isEqualTo(restaurantGet.get().getTables());
+            assertThat(restaurantRequest.getCuisines()).isEqualTo(restaurantGet.get().getCuisines());
         }
 
         @Test
         void notFound(){
 
-            var restaurantGet = restaurantPersistenceAdapter.findById(UUID.fromString("0b02d081-b452-4edf-bc09-039bad8de53a"));
+            var restaurantRequest = GenerateData.createRestaurant();
+
+            var restaurantGet = restaurantPersistenceAdapter.findById(restaurantRequest.getRestaurantId());
 
             assertThat(restaurantGet).isEmpty();
 

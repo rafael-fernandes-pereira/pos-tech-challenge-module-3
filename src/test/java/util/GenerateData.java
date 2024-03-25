@@ -47,7 +47,7 @@ public class GenerateData {
                 faker.address().streetAddress(),
                 Integer.valueOf(faker.address().streetAddressNumber()),
                 faker.address().secondaryAddress(),
-                faker.name().lastName(),
+                "Centro",
                 faker.address().city(),
                 faker.address().stateAbbr());
     }

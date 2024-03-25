@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface GetRestaurantUseCase {
 
-    Optional<Restaurant> findById(Restaurant.RestaurantId restaurantId);
-
     List<Restaurant> findAllBy(String name, String location, List<Cuisine> cuisines);
 
 }

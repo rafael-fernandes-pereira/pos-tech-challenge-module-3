@@ -1,12 +1,16 @@
 package com.github.rafaelfernandes.restaurant.application.domain.service;
 
 import com.github.rafaelfernandes.common.exception.RestaurantDuplicateException;
+import com.github.rafaelfernandes.common.exception.RestaurantNotFoundException;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.out.ManageRestaurantPort;
+import com.github.rafaelfernandes.service.application.domain.model.Service;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import util.GenerateData;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -62,8 +66,54 @@ class ManageRestaurantServiceTest {
 
     }
 
-    @Test
-    void findById() {
+    @Nested
+    class FindById {
+
+        @Test
+        void validateSuccessFindById(){
+
+            // Arrange
+
+            var restaurantRequest = GenerateData.createRestaurant();
+
+            when(port.findById(any(Restaurant.RestaurantId.class))).thenReturn(Optional.of(restaurantRequest));
+
+            // Act
+
+            var restaurantData = service.findById(restaurantRequest.getRestaurantId());
+
+            // Assert
+
+            assertThat(restaurantData).isNotNull();
+            assertThat(restaurantData.getRestaurantId()).isEqualTo(restaurantRequest.getRestaurantId());
+            assertThat(restaurantData.getName()).isEqualTo(restaurantRequest.getName());
+
+            verify(port, times(1)).findById(any());
+
+        }
+
+        @Test
+        void validateNotFound(){
+
+            // Arrange
+
+            var restaurantRequest = GenerateData.createRestaurant();
+
+            when(port.findById(any(Restaurant.RestaurantId.class))).thenReturn(Optional.empty());
+
+            // Act | Assert
+
+            assertThatThrownBy(() -> {
+                service.findById(restaurantRequest.getRestaurantId());
+            })
+                    .isInstanceOf(RestaurantNotFoundException.class)
+                    .hasMessage("Restaurante(s) não existe!")
+            ;
+
+            verify(port, times(1)).findById(any());
+
+        }
+
     }
 
     @Test

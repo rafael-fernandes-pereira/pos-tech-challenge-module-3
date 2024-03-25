@@ -26,59 +26,7 @@ class GetRestaurantdataServiceTest {
     private final GetRestaurantdataService getRestaurantdataService
             = new GetRestaurantdataService(getRestaurantPort);
 
-    @Nested
-    class FindById {
-        @Test
-        void validateSuccess() {
 
-            var restaurant = GenerateData.createRestaurant();
-
-            var restaurantId = restaurant.getRestaurantId();
-
-            when(getRestaurantPort.findById(any(UUID.class)))
-                    .thenReturn(Optional.of(restaurant));
-
-
-            var restaurantGetData = getRestaurantdataService.findById(restaurantId);
-
-            assertThat(restaurantGetData).isPresent();
-            assertThat(restaurantId).isEqualTo(restaurantGetData.get().getRestaurantId());
-
-            verify(getRestaurantPort, times(1)).findById(any(UUID.class));
-
-        }
-
-        @Test
-        void validateEmptyResult(){
-
-            when(getRestaurantPort.findById(any(UUID.class)))
-                    .thenReturn(Optional.empty());
-
-
-            assertThatThrownBy(() -> {
-                getRestaurantdataService.findById(new Restaurant.RestaurantId(UUID.randomUUID().toString()));
-            })
-                    .isInstanceOf(RestaurantNotFoundException.class)
-                    .hasMessage("Restaurante(s) não existe!");
-
-            verify(getRestaurantPort, times(1)).findById(any(UUID.class));
-
-        }
-
-        @Test
-        void validateRestaurantIdEmpty(){
-
-            assertThatThrownBy(() -> {
-                getRestaurantdataService.findById(new Restaurant.RestaurantId(""));
-            })
-                    .isInstanceOf(ConstraintViolationException.class)
-                    .hasMessage("id: O campo deve ser do tipo UUID");
-
-            verify(getRestaurantPort, times(0)).findById(any(UUID.class));
-
-        }
-
-    }
 
     @Nested
     class FindAllBy {

@@ -9,8 +9,6 @@ import java.util.UUID;
 
 public interface GetRestaurantPort {
 
-    Optional<Restaurant> findById(UUID id);
-
     List<Restaurant> findAllBy(String name,
                                String location,
                                List<Cuisine> cuisines);

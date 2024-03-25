@@ -6,6 +6,7 @@ import com.github.rafaelfernandes.restaurant.application.port.out.GetRestaurantP
 import com.github.rafaelfernandes.common.annotations.PersistenceAdapter;
 import com.github.rafaelfernandes.common.enums.Cuisine;
 import com.github.rafaelfernandes.common.exception.RestaurantDuplicateException;
+import com.github.rafaelfernandes.restaurant.application.port.out.ManageRestaurantPort;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -16,12 +17,11 @@ import java.util.UUID;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class RestaurantPersistenceAdapter implements CreateRestaurantPort, GetRestaurantPort {
+public class RestaurantPersistenceAdapter implements ManageRestaurantPort, GetRestaurantPort {
 
     private final RestaurantRepository restaurantRepository;
     private final RestaurantMapper restaurantMapper;
 
-    @Override
     @Transactional
     public Restaurant.RestaurantId create(Restaurant restaurant) throws RestaurantDuplicateException {
 
@@ -62,5 +62,19 @@ public class RestaurantPersistenceAdapter implements CreateRestaurantPort, GetRe
 
 
 
+    }
+
+    @Override
+    public Boolean existsName(String name) {
+        return restaurantRepository.existsByName(name);
+    }
+
+    @Override
+    public Restaurant save(Restaurant restaurant) {
+        var restaurantToSave = restaurantMapper.toCreateEntity(restaurant);
+
+        var restaurantSaved = restaurantRepository.save(restaurantToSave);
+
+        return restaurantMapper.toModel(restaurantSaved);
     }
 }

@@ -6,6 +6,7 @@ import com.github.rafaelfernandes.common.exception.RestaurantDuplicateException;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.in.ManageRestaurantUseCase;
 import com.github.rafaelfernandes.restaurant.application.port.out.ManageRestaurantPort;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -18,7 +19,9 @@ public class ManageRestaurantService implements ManageRestaurantUseCase {
     private final ManageRestaurantPort manageRestaurantPort;
 
     @Override
+    @Transactional
     public Restaurant.RestaurantId create(Restaurant restaurant) {
+
         if (manageRestaurantPort.existsName(restaurant.getName())) throw new RestaurantDuplicateException();
 
         var restaurantNew = manageRestaurantPort.save(restaurant);
@@ -28,8 +31,8 @@ public class ManageRestaurantService implements ManageRestaurantUseCase {
     }
 
     @Override
-    public Optional<Restaurant> findById(Restaurant.RestaurantId restaurantId) {
-        return Optional.empty();
+    public Restaurant findById(Restaurant.RestaurantId restaurantId) {
+        return null;
     }
 
     @Override

@@ -10,7 +10,7 @@ public interface ManageRestaurantUseCase {
 
     Restaurant.RestaurantId create(Restaurant command);
 
-    Optional<Restaurant> findById(Restaurant.RestaurantId restaurantId);
+    Restaurant findById(Restaurant.RestaurantId restaurantId);
 
     List<Restaurant> findAllBy(String name, String location, List<Cuisine> cuisines);
 

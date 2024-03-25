@@ -32,46 +32,59 @@ class RestaurantPersistenceAdapterTest {
         restaurantRepository.deleteAll();
     }
 
+
     @Nested
-    class Create {
+    class ExistsName {
 
         @Test
-        void saveNewRestaurantSucess(){
-
+        void validateTrue(){
+            // Arrange
             var restaurant = GenerateData.createRestaurant();
-            var restaurantId = restaurantPersistenceAdapter.create(restaurant);
+            var entity = restaurantMapper.toCreateEntity(restaurant);
+            restaurantRepository.save(entity);
 
-            assertThat(restaurant.getRestaurantId()).isEqualTo(restaurantId);
+            // Act
 
-            var restaurantIdUUID = UUID.fromString(restaurantId.id());
+            var isExists = restaurantPersistenceAdapter.existsName(restaurant.getName());
 
-            var restaurantSaved = restaurantRepository.findById(restaurantIdUUID);
+            // Assert
 
-            assertThat(restaurantSaved).isPresent();
-            assertThat(restaurant.getName()).isEqualTo(restaurantSaved.get().getName());
-            assertThat(restaurant.getTables()).isEqualTo(restaurantSaved.get().getTables());
-            assertThat(restaurant.getAddress().getStreet()).isEqualTo(restaurantSaved.get().getAddress().getStreet());
-
-            var openingHours = restaurantMapper.toOpeningHoursModel(restaurantSaved.get().getOpeningHours());
-
-            assertThat(openingHours).isEqualTo(restaurant.getOpeningHours());
-
-
+            assertThat(isExists).isTrue();
 
 
         }
 
         @Test
-        void saveDuplicateRestaurantError(){
+        void validateFalse() {
+
+            // Act
+
+            var isExists = restaurantPersistenceAdapter.existsName("Banana");
+
+            // Assert
+
+            assertThat(isExists).isFalse();
+
+        }
+
+    }
+
+    @Nested
+    class Save {
+
+        @Test
+        void validateSuccessSave(){
 
             var restaurant = GenerateData.createRestaurant();
-            restaurantPersistenceAdapter.create(restaurant);
+            var restaurantSaved = restaurantPersistenceAdapter.save(restaurant);
 
-            assertThatThrownBy(() -> {
-                restaurantPersistenceAdapter.create(restaurant);
-            })
-                    .isInstanceOf(RestaurantDuplicateException.class)
-                    .hasMessage("Nome já cadastrado!");
+            assertThat(restaurant.getRestaurantId()).isEqualTo(restaurantSaved.getRestaurantId());
+
+            var restaurantIdUUID = UUID.fromString(restaurantSaved.getRestaurantId().id());
+
+            var restaurantFound = restaurantRepository.findById(restaurantIdUUID);
+
+            assertThat(restaurantFound).isPresent();
 
         }
 

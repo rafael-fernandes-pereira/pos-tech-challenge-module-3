@@ -1,6 +1,5 @@
 package com.github.rafaelfernandes.restaurant.adapter.in.web;
 
-import com.github.rafaelfernandes.reservation.adapter.in.web.request.ReservationResponse;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.response.*;
 import com.github.rafaelfernandes.restaurant.application.port.in.*;
@@ -39,8 +38,8 @@ import java.util.UUID;
 @Tag(name = "01 - Restaurant", description = "Restaurant Endpoint")
 public class RestaurantController {
 
-    private final SaveDataRestaurantUseCase saveDataRestaurantUseCase;
     private final GetRestaurantUseCase getRestaurantUseCase;
+    private final ManageRestaurantUseCase useCase;
 
     @Operation(summary = "Create a Restaurant")
     @ApiResponses(value = {
@@ -80,7 +79,7 @@ public class RestaurantController {
                 request.name(), addressModel, openinHours, cuisines, request.tables()
         );
 
-        var retaurantId = this.saveDataRestaurantUseCase.create(restaurantModel);
+        var retaurantId = this.useCase.create(restaurantModel);
 
         URI location = uriComponentsBuilder
                 .path("restaurants/{id}")

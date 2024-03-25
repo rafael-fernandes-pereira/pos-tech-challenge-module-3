@@ -7,4 +7,5 @@ spring:
 springdoc:
   swagger-ui:
     tagsSorter: alpha
+    operationsSorter: alpha
   writer-with-order-by-keys: true

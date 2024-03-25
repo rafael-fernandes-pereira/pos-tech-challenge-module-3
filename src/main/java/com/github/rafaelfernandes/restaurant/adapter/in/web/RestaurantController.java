@@ -8,6 +8,7 @@ import com.github.rafaelfernandes.common.annotations.WebAdapter;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.common.enums.Cuisine;
 import com.github.rafaelfernandes.review.adapter.in.web.response.ReviewResponse;
+import com.github.rafaelfernandes.service.adapter.in.web.response.ServiceResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,7 +51,7 @@ public class RestaurantController {
             path = "/",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Void> createNew(
+    ResponseEntity<Void> create(
             @Parameter @RequestBody final RestaurantRequest request, UriComponentsBuilder uriComponentsBuilder) {
 
         var addressModel = new Restaurant.Address(
@@ -133,11 +135,37 @@ public class RestaurantController {
     }
 
 
-
+    @Operation(summary = "Search Restaurant")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    description = "Success", responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Bad request", responseCode = "400",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantError.class)
+                    )
+            ),
+            @ApiResponse(
+                    description = "Not found", responseCode = "404",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantError.class)
+                    )
+            )
+    })
     @GetMapping(path = "/",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<List<RestaurantResponse>> getAllBy(@RequestParam String name, @RequestParam String location, @RequestParam List<String> cuisines){
+    ResponseEntity<List<RestaurantResponse>> getAllBy(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) List<String> cuisines ){
 
         var cuisinesEnum = cuisines.stream()
                 .map(Cuisine::valueOf)
@@ -196,6 +224,27 @@ public class RestaurantController {
                 cuisineResponses
         );
 
+    }
+
+    @Operation(summary = "Get all services by Restaurant ID and between dates")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    description = "Success", responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ServiceResponse.class)
+                            )
+                    )
+            ),
+            @ApiResponse(description = "Bad request", responseCode = "400"),
+            @ApiResponse(description = "Not found", responseCode = "404")
+    })
+    @GetMapping(path = "/{restaurantId}/services",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<List<ServiceResponse>> getAllServicesByRestaurantIdAndBetweenDates(@PathVariable final String restaurantId, @RequestParam final LocalDate from, @RequestParam final LocalDate to){
+        return null;
     }
 
     @Operation(summary = "Get all reviews by Restaurant ID")

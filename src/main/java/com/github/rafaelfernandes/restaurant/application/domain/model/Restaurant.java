@@ -26,19 +26,22 @@ public class Restaurant {
     private final RestaurantId restaurantId;
 
     @NotEmpty(message = "O campo deve estar preenchido")
-    @Length(min = 3, max = 100, message = "O campo deve ter no minimo 3 e no maximo 100 caracteres")
+    @Length(min = 3, max = 100, message = "O campo deve ter no minimo {min} e no maximo {max} caracteres")
     private String name;
 
-    @NotNull(message = "O campo deve estar preenchido")
-    private Address address;
+    @NotNull(message = "O campo deve ser maior que zero (0)")
+    @Positive(message = "O campo deve ser maior que zero (0)")
+    private Integer tables;
 
     private final LocalDateTime register;
 
     @NotNull(message = "O campo deve estar preenchido")
-    private List<OpeningHour> openingHours;
+    private Address address;
+
 
     @NotNull(message = "O campo deve estar preenchido")
-    private Integer tables;
+    private List<OpeningHour> openingHours;
+
 
     @NotNull(message = "O campo deve estar preenchido")
     private List<Cuisine> cuisines;
@@ -60,7 +63,7 @@ public class Restaurant {
         @Length( min = 10, max = 150, message = "O campo deve ter no minimo {min} e no maximo {max} caracteres")
         String street;
 
-        @NotNull(message = "O campo deve estar preenchido")
+        @NotNull(message = "O campo deve ser maior que zero (0)")
         @Positive(message = "O campo deve ser maior que zero (0)")
         Integer number;
 
@@ -68,14 +71,14 @@ public class Restaurant {
         String addittionalDetails;
 
         @NotEmpty(message = "O campo deve estar preenchido")
-        @Length( min = 3, max = 30, message = "O campo deve ter no minimo 3 e no máximo 30 caracteres")
+        @Length( min = 3, max = 30, message = "O campo deve ter no minimo {min} e no máximo {max} caracteres")
         String neighborhood;
 
         @NotEmpty(message = "O campo deve estar preenchido")
-        @Length( min = 3, max = 60, message = "O campo deve ter no minimo 3 e no máximo 60 caracteres")
+        @Length( min = 3, max = 60, message = "O campo deve ter no minimo {min} e no máximo {max} caracteres")
         String city;
 
-        @NotNull(message = "O campo deve estar preenchido")
+        @NotNull(message = "O campo deve ser uma sigla de estado válida")
         @ValueOfEnum(enumClass = State.class, message = "O campo deve ser uma sigla de estado válida")
         String state;
 
@@ -127,7 +130,7 @@ public class Restaurant {
     }
 
     public static Restaurant of(String restaurantId, String name, Address address, LocalDateTime register, List<OpeningHour> openingHours, Integer numberOfTables, List<Cuisine> cuisines){
-        return new Restaurant(new RestaurantId(restaurantId), name, address, register, openingHours, numberOfTables, cuisines);
+        return new Restaurant(new RestaurantId(restaurantId), name, numberOfTables, register, address,  openingHours, cuisines);
     }
 
 }

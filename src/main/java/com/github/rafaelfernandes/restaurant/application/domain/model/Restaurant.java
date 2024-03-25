@@ -2,6 +2,7 @@ package com.github.rafaelfernandes.restaurant.application.domain.model;
 
 import com.github.rafaelfernandes.common.enums.State;
 import com.github.rafaelfernandes.common.validation.ValueOfEnum;
+import jakarta.validation.ValidationException;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.cglib.core.Local;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -38,15 +40,14 @@ public class Restaurant {
     @NotNull(message = "O campo deve estar preenchido")
     private Address address;
 
-
     @NotNull(message = "O campo deve estar preenchido")
     private List<OpeningHour> openingHours;
-
 
     @NotNull(message = "O campo deve estar preenchido")
     private List<Cuisine> cuisines;
 
     public record RestaurantId(
+            @NotEmpty(message = "O campo deve ser do tipo UUID")
             @org.hibernate.validator.constraints.UUID(message = "O campo deve ser do tipo UUID")
             String id
     ) {
@@ -95,7 +96,7 @@ public class Restaurant {
 
     @Value
     public static class OpeningHour {
-        @NotNull(message = "O campo deve estar preenchido")
+        @NotNull(message = "O campo deve ser uma sigla de dias válidos")
         @ValueOfEnum(enumClass = DayOfWeek.class, message = "O campo deve ser uma sigla de dias válidos")
         String dayOfWeek;
 
@@ -104,13 +105,27 @@ public class Restaurant {
 
         @NotNull(message = "O campo deve estar preenchido")
         LocalTime end;
+
+        public OpeningHour(String dayOfWeek, LocalTime start, LocalTime end) {
+            this.dayOfWeek = dayOfWeek;
+            this.start = start;
+            this.end = end;
+            validate(this);
+
+            if (this.end.isBefore(this.start)) throw new ValidationException("O horário final deve ser depois do inicial");
+
+        }
     }
 
     @Value
     public static class Cuisine {
-        @NotEmpty(message = "O campo deve ser preenchido")
-        @ValueOfEnum(enumClass = com.github.rafaelfernandes.common.enums.Cuisine.class)
+        @NotEmpty(message = "O tipo de cozinha deve seguir um dos exemplos.")
+        @ValueOfEnum(enumClass = com.github.rafaelfernandes.common.enums.Cuisine.class, message = "O tipo de cozinha deve seguir um dos exemplos.")
         String cuisine;
+        public Cuisine(String cuisine){
+            this.cuisine = cuisine;
+            validate(this);
+        }
     }
 
     public Restaurant(String name, Address address, List<OpeningHour> openingHours, List<Cuisine> cuisines, Integer tables) {

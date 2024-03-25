@@ -2,6 +2,7 @@ package com.github.rafaelfernandes.restaurant.domain;
 
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -36,6 +37,32 @@ public class RestaurantTest {
 
     @Nested
     class Validate {
+
+        @Nested
+        class RestaurantIdField {
+
+            @ParameterizedTest
+            @ValueSource(strings = {"", "invalid-uuid"})
+            @NullSource
+            void validateInvalidRestaurandId(String restaurantId){
+
+                assertThatCode(() -> {
+                    new Restaurant.RestaurantId(restaurantId);
+                })
+                        .isInstanceOf(ConstraintViolationException.class)
+                        .hasMessageContaining("id: O campo deve ser do tipo UUID");
+            }
+
+            @Test
+            void validateSuccessRestaurantId(){
+                var uuid = "31d5dbb8-0fa1-42ce-bd0b-cf094e028b84";
+                var restaurantId = new Restaurant.RestaurantId(uuid);
+
+                assertThat(restaurantId.id()).isEqualTo(uuid);
+
+            }
+
+        }
 
         @Nested
         class Name {
@@ -277,7 +304,150 @@ public class RestaurantTest {
             @Nested
             class State {
 
+                @ParameterizedTest
+                @ValueSource(strings = {"", "IO"})
+                @NullSource
+                void validateInvalidState(String state){
 
+                    assertThatCode(() -> {
+                        new Restaurant.Address(street, number, addittionalDetails, neighborhood, city, state);
+                    })
+                            .isInstanceOf(ConstraintViolationException.class)
+                            .hasMessageContaining("state: O campo deve ser uma sigla de estado válida");
+
+                }
+
+                @ParameterizedTest
+                @ValueSource(strings = {"MG", "SP"})
+                void validateSuccessState(String state) {
+                    var address = new Restaurant.Address(street, number, addittionalDetails, neighborhood, city, state);
+
+                    assertThat(address.getState()).isEqualTo(state);
+
+                }
+
+
+
+            }
+
+        }
+
+        @Nested
+        class OpeningHour {
+
+            String dayOfWeek = DayOfWeek.FRIDAY.name();
+            LocalTime start = LocalTime.of(9, 0);
+            LocalTime end = LocalTime.of(12, 0);
+
+            @Nested
+            class DayOfWeekField {
+
+                @ParameterizedTest
+                @ValueSource(strings = {"", "DOMINGO_FEIRA"})
+                @NullSource
+                void validateInvalidState(String dayOfWeek){
+
+                    assertThatCode(() -> {
+                        new Restaurant.OpeningHour(dayOfWeek, start, end);
+                    })
+                            .isInstanceOf(ConstraintViolationException.class)
+                            .hasMessageContaining("dayOfWeek: O campo deve ser uma sigla de dias válidos")
+                    ;
+
+                }
+
+                @ParameterizedTest
+                @ValueSource(strings = {"FRIDAY", "SUNDAY"})
+                void validateSuccessState(String state) {
+                    var openingHour = new Restaurant.OpeningHour(dayOfWeek, start, end);
+
+                    assertThat(openingHour.getDayOfWeek()).isEqualTo(dayOfWeek);
+
+                }
+
+            }
+
+            @Nested
+            class StartEnd {
+
+                @ParameterizedTest
+                @NullSource
+                void validateNullStart(LocalTime start){
+
+                    assertThatCode(() -> {
+                        new Restaurant.OpeningHour(dayOfWeek, start, end);
+                    })
+                            .isInstanceOf(ConstraintViolationException.class)
+                            .hasMessageContaining("start: O campo deve estar preenchido")
+                    ;
+
+                }
+
+                @ParameterizedTest
+                @NullSource
+                void validateNullEnd(LocalTime end){
+
+                    assertThatCode(() -> {
+                        new Restaurant.OpeningHour(dayOfWeek, start, end);
+                    })
+                            .isInstanceOf(ConstraintViolationException.class)
+                            .hasMessageContaining("end: O campo deve estar preenchido")
+                    ;
+
+                }
+
+                @Test
+                void validateEndIsBeforeStart(){
+
+                    var start = LocalTime.of(10, 0);
+                    var end = LocalTime.of(9, 0);
+
+                    assertThatCode(() -> {
+                        new Restaurant.OpeningHour(dayOfWeek, start, end);
+                    })
+                            .isInstanceOf(ValidationException.class)
+                            .hasMessageContaining("O horário final deve ser depois do inicial")
+                    ;
+
+                }
+
+                @Test
+                void validateSuccessStartEnd(){
+
+                    var openingHour = new Restaurant.OpeningHour(dayOfWeek, start, end);
+
+                    assertThat(openingHour.getStart()).isEqualTo(start);
+                    assertThat(openingHour.getEnd()).isEqualTo(end);
+
+                }
+
+            }
+
+        }
+
+        @Nested
+        class CuisineField {
+
+            @ParameterizedTest
+            @ValueSource(strings = {"", "PAULISTANA_MEEEU"})
+            @NullSource
+            void validateInvalidCuisine(String cuisine){
+
+                assertThatCode(() -> {
+                    new Restaurant.Cuisine(cuisine);
+                })
+                        .isInstanceOf(ConstraintViolationException.class)
+                        .hasMessageContaining("cuisine: O tipo de cozinha deve seguir um dos exemplos.");
+
+            }
+
+            @ParameterizedTest
+            @ValueSource(strings = {"BRAZILIAN", "INDIAN"})
+            void validateSuccessCuisine(String cuisineType){
+
+                var cuisine = new Restaurant.Cuisine(cuisineType);
+
+                assertThat(cuisine.getCuisine()).isEqualTo(cuisineType);
 
             }
 

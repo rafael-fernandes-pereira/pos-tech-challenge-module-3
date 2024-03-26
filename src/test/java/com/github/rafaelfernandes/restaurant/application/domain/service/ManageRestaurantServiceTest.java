@@ -1,5 +1,6 @@
 package com.github.rafaelfernandes.restaurant.application.domain.service;
 
+import com.github.rafaelfernandes.common.enums.Cuisine;
 import com.github.rafaelfernandes.common.exception.RestaurantDuplicateException;
 import com.github.rafaelfernandes.common.exception.RestaurantNotFoundException;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
@@ -123,11 +124,39 @@ class ManageRestaurantServiceTest {
     class FindAllBy {
 
 
+        @Test
+        void validateAllParamNull(){
 
-        @BeforeEach
-        void setUpFindAll(){
+            // Act
 
+            assertThatThrownBy(() -> {
+                service.findAllBy(null, null, null);
+            })
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Pelo menos um dos parâmetros deve ser fornecido.")
+            ;
 
+            // Assert
+
+            verify(port, times(0)).findAllBy(isNull(), isNull(), isNull());
+
+        }
+
+        @Test
+        void validateAllParamEmpty(){
+
+            // Act
+
+            assertThatThrownBy(() -> {
+                service.findAllBy("", "", new ArrayList<>());
+            })
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Pelo menos um dos parâmetros deve ser fornecido.")
+            ;
+
+            // Assert
+
+            verify(port, times(0)).findAllBy(anyString(), anyString(), anyList());
 
         }
 
@@ -141,16 +170,86 @@ class ManageRestaurantServiceTest {
                add(restaurant);
             }};
 
-            when(port.findAllBy(anyString(), anyString(), anyList())).thenReturn(restaurants);
+            when(port.findAllBy(anyString(), isNull(), isNull())).thenReturn(restaurants);
 
             // Act
 
-            var list = service.findAllBy(restaurant.getName(), "", new ArrayList<>());
+            var list = service.findAllBy(restaurant.getName(), null, null);
 
             // Assert
 
             assertThat(list).hasSize(1).contains(restaurant);
-            verify(port.findAllBy(any(), null, null), times(1));
+            verify(port, times(1)).findAllBy(any(), isNull(), isNull());
+
+        }
+
+        @Test
+        void findAllByLocation() {
+
+            // Arrange
+
+            var restaurant = GenerateData.createRestaurant();
+            var restaurants = new ArrayList<Restaurant>(){{
+                add(restaurant);
+            }};
+
+            when(port.findAllBy(isNull(), anyString(), isNull())).thenReturn(restaurants);
+
+            // Act
+
+            var list = service.findAllBy(null, "Rua JoseDaCosta", null);
+
+            // Assert
+
+            assertThat(list).hasSize(1).contains(restaurant);
+            verify(port, times(1)).findAllBy(isNull(), anyString(), isNull());
+        }
+
+        @Test
+        void findAllByCuisines() {
+
+            // Arrange
+
+            var restaurant = GenerateData.createRestaurant();
+            var restaurants = new ArrayList<Restaurant>(){{
+                add(restaurant);
+            }};
+
+            var cuisines = new ArrayList<Cuisine>(){{
+                add(Cuisine.BRAZILIAN);
+            }};
+
+            when(port.findAllBy(isNull(), isNull(), anyList())).thenReturn(restaurants);
+
+            // Act
+
+            var list = service.findAllBy(null, null, cuisines);
+
+            // Assert
+
+            assertThat(list).hasSize(1).contains(restaurant);
+            verify(port, times(1)).findAllBy(isNull(), isNull(), anyList());
+        }
+
+        @Test
+        void validateEmpty(){
+
+            // Arrange
+
+            when(port.findAllBy(anyString(), isNull(), isNull())).thenReturn(new ArrayList<Restaurant>());
+
+            // Act
+
+            assertThatThrownBy(() -> {
+                service.findAllBy("Oba Oba", null, null);
+            })
+                    .isInstanceOf(RestaurantNotFoundException.class)
+                    .hasMessage("Restaurante(s) não existe!")
+            ;
+
+            // Assert
+
+            verify(port, times(1)).findAllBy(anyString(), isNull(), isNull());
 
         }
 

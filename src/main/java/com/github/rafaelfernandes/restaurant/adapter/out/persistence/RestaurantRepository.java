@@ -16,10 +16,10 @@ public interface RestaurantRepository extends JpaRepository<RestaurantJpaEntity,
             SELECT r FROM RestaurantJpaEntity r
             WHERE (:name IS NULL OR r.fullSearch LIKE %:name%)
             AND (:location IS NULL OR r.fullSearch LIKE %:location%)
-            AND (:cuisineList IS NULL OR r.fullSearch IN :cuisineList)
+            AND (:cuisineList IS NULL OR r.fullSearch LIKE %:cuisineList%)
             """)
     List<RestaurantJpaEntity> findRestaurantsByCriteria(@Param("name") String name,
                                                         @Param("location") String location,
-                                                        @Param("cuisineList") List<Cuisine> cuisineList);
+                                                        @Param("cuisineList") String cuisineList);
 
 }

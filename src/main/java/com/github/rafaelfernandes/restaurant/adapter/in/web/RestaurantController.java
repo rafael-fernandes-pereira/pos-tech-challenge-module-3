@@ -27,6 +27,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -165,7 +166,8 @@ public class RestaurantController {
             @RequestParam(required = false) String location,
             @RequestParam(required = false) List<String> cuisines ){
 
-        var cuisinesEnum = cuisines.stream()
+        var cuisinesEnum = (cuisines == null || cuisines.isEmpty()) ? new ArrayList<Cuisine>() :
+                cuisines.stream()
                 .map(Cuisine::valueOf)
                 .toList();
 
@@ -174,7 +176,6 @@ public class RestaurantController {
         var restaurantsData = restaurants.stream()
                 .map(RestaurantController::getRestaurantResponse)
                 .toList();
-
 
         return ResponseEntity
                 .status(HttpStatus.OK)

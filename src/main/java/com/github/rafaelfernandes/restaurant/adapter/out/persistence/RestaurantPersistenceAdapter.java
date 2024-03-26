@@ -8,11 +8,13 @@ import com.github.rafaelfernandes.common.exception.RestaurantDuplicateException;
 import com.github.rafaelfernandes.restaurant.application.port.out.ManageRestaurantPort;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
@@ -36,8 +38,14 @@ public class RestaurantPersistenceAdapter implements ManageRestaurantPort {
 
     @Override
     public List<Restaurant> findAllBy(String name, String location, List<Cuisine> cuisines) {
+
+        String cusinesString = (cuisines == null || cuisines.isEmpty()) ? null :
+                cuisines.stream()
+                .map(Enum::toString)
+                .collect(Collectors.joining("_"));
+
         var restaurantRepositoryPage = restaurantRepository.findRestaurantsByCriteria(
-            name, location, cuisines
+            name, location, cusinesString
         );
 
         if (restaurantRepositoryPage.isEmpty()) return new ArrayList<>();

@@ -4,6 +4,7 @@ import com.github.rafaelfernandes.restaurant.adapter.in.web.response.RestaurantE
 import com.github.rafaelfernandes.common.exception.RestaurantDuplicateException;
 import com.github.rafaelfernandes.common.exception.RestaurantNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice(basePackageClasses = RestaurantExceptionHandler.class)
 public class RestaurantExceptionHandler {
 
-    @ExceptionHandler({ConstraintViolationException.class})
-    public ResponseEntity<RestaurantError> restaurantErrorValidation(ConstraintViolationException exception){
+    @ExceptionHandler({ValidationException.class})
+    public ResponseEntity<RestaurantError> restaurantErrorValidation(ValidationException exception){
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new RestaurantError(exception.getMessage()));
@@ -32,5 +33,15 @@ public class RestaurantExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(new RestaurantError(exception.getMessage()));
     }
+
+
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<RestaurantError> restaurantErrorValidation(IllegalArgumentException exception){
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new RestaurantError(exception.getMessage()));
+    }
+
+
 
 }

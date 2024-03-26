@@ -1,5 +1,6 @@
 package com.github.rafaelfernandes.restaurant.adapter.in.web;
 
+import com.github.rafaelfernandes.common.enums.Cuisine;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.AddressRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.CuisineRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.OpeningHourRequest;
@@ -24,7 +25,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -206,6 +209,149 @@ public class RestaurantControllerTest {
 
             String addressState = documentContext.read("$.address.state");
             assertThat(addressState).isEqualTo(request.address().state());
+
+        }
+
+    }
+
+    @Nested
+    class GetAllBy {
+
+        @Test
+        void validateNullParameters(){
+
+            var paramaters = new HashMap<String, String>();
+            paramaters.put("name", null);
+            paramaters.put("location", null);
+            paramaters.put("cuisines", null);
+
+            ResponseEntity<String> response = restTemplate
+                    .getForEntity(
+                            "/restaurants/",
+                            String.class,
+                            paramaters
+                    );
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+            DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+            String error = documentContext.read("$.errors");
+
+            assertThat(error).isEqualTo("Pelo menos um dos parâmetros deve ser fornecido.");
+
+        }
+
+        @Test
+        void validateEmptyParameters(){
+
+            var paramaters = new HashMap<String, Object>();
+            paramaters.put("name", "");
+            paramaters.put("location", "");
+            paramaters.put("cuisines", "");
+
+            ResponseEntity<String> response = restTemplate
+                    .getForEntity(
+                            "/restaurants/?name={name}&location={location}&cuisines={cuisines}",
+                            String.class,
+                            paramaters
+                    );
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+            DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+            String error = documentContext.read("$.errors");
+
+            assertThat(error).isEqualTo("Pelo menos um dos parâmetros deve ser fornecido.");
+
+        }
+
+
+        @Test
+        void validateSuccessName(){
+
+            var request = GenerateData.gerenRestaurantRequest();
+
+            createRestaurantPost(request);
+
+            var paramaters = new HashMap<String, Object>();
+            paramaters.put("name", request.name());
+            paramaters.put("location", "");
+            paramaters.put("cuisines", "");
+
+            ResponseEntity<String> response = restTemplate
+                    .getForEntity(
+                            "/restaurants/?name={name}&location={location}&cuisines={cuisines}",
+                            String.class,
+                            paramaters
+                    );
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+            DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+            String name = documentContext.read("$.[0].name");
+
+            assertThat(name).isEqualTo(request.name());
+
+        }
+
+        @Test
+        void validateSuccessLocation(){
+
+            var request = GenerateData.gerenRestaurantRequest();
+
+            createRestaurantPost(request);
+
+            var paramaters = new HashMap<String, Object>();
+            paramaters.put("name", "");
+            paramaters.put("location", request.address().street());
+            paramaters.put("cuisines", "");
+
+            ResponseEntity<String> response = restTemplate
+                    .getForEntity(
+                            "/restaurants/?name={name}&location={location}&cuisines={cuisines}",
+                            String.class,
+                            paramaters
+                    );
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+            DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+            String name = documentContext.read("$.[0].name");
+
+            assertThat(name).isEqualTo(request.name());
+
+        }
+
+        @Test
+        void validateSuccessCuisines(){
+
+            var request = GenerateData.gerenRestaurantRequest();
+
+            createRestaurantPost(request);
+
+            var paramaters = new HashMap<String, Object>();
+            paramaters.put("name", "");
+            paramaters.put("location", "");
+            paramaters.put("cuisines", request.cuisines().get(0).cuisine());
+
+            ResponseEntity<String> response = restTemplate
+                    .getForEntity(
+                            "/restaurants/?name={name}&location={location}&cuisines={cuisines}",
+                            String.class,
+                            paramaters
+                    );
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+            DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+            String name = documentContext.read("$.[0].name");
+
+            assertThat(name).isEqualTo(request.name());
 
         }
 

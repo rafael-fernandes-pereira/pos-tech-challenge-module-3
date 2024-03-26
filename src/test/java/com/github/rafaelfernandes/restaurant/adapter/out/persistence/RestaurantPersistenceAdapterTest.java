@@ -1,6 +1,9 @@
 package com.github.rafaelfernandes.restaurant.adapter.out.persistence;
 
+import com.github.rafaelfernandes.common.enums.Cuisine;
 import com.github.rafaelfernandes.common.exception.RestaurantDuplicateException;
+import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
+import org.junit.jupiter.api.BeforeEach;
 import util.GenerateData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
@@ -9,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -128,18 +132,70 @@ class RestaurantPersistenceAdapterTest {
     @Nested
     class FindAllBy {
 
+        Restaurant restaurant;
+
+        @BeforeEach
+        void setUp(){
+            restaurant = GenerateData.createRestaurant();
+            restaurantPersistenceAdapter.create(restaurant);
+        }
+
         @Test
         void findByAllByNameSucess(){
 
-            var restaurant = GenerateData.createRestaurant();
-            restaurantPersistenceAdapter.create(restaurant);
-
             var restaurants = restaurantPersistenceAdapter.findAllBy(restaurant.getName(), "", null);
 
-            assertThat(restaurants).hasSize(1);
+            assertThat(restaurants)
+                    .hasSize(1)
+                    .extracting(Restaurant::getName)
+                    .contains(restaurant.getName());
+
+
+        }
+
+        @Test
+        void findByAllByLocationSucess(){
+
+            var location = restaurant.getAddress().getStreet();
+
+            var restaurants = restaurantPersistenceAdapter.findAllBy(null, location, null);
+
+            assertThat(restaurants)
+                    .hasSize(1)
+                    .extracting(Restaurant::getName)
+                    .contains(restaurant.getName());
+
+
+        }
+
+        @Test
+        void findByAllByCuisinesSucess(){
+
+            var cuisines = new ArrayList<Cuisine>(){{
+                add(Cuisine.valueOf(restaurant.getCuisines().get(0).getCuisine()));
+            }};
+
+            var restaurants = restaurantPersistenceAdapter.findAllBy(null, null, cuisines);
+
+            assertThat(restaurants)
+                    .hasSize(1)
+                    .extracting(Restaurant::getName)
+                    .contains(restaurant.getName());
+
+
+        }
+
+        @Test
+        void findAllReturnEmpty(){
+
+            var restaurants = restaurantPersistenceAdapter.findAllBy("SAO_TOME", null, null);
+
+            assertThat(restaurants).isEmpty();
 
         }
 
     }
+
+
 
 }

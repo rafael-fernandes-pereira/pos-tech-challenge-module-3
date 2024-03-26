@@ -3,7 +3,6 @@ package com.github.rafaelfernandes.service.adapter.in.web;
 import com.github.rafaelfernandes.common.annotations.WebAdapter;
 import com.github.rafaelfernandes.reservation.adapter.in.web.request.ReservationResponse;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
-import com.github.rafaelfernandes.review.adapter.in.web.response.ReviewResponse;
 import com.github.rafaelfernandes.service.adapter.in.web.request.ServiceRequest;
 import com.github.rafaelfernandes.service.adapter.in.web.response.OpeningHourServiceResponse;
 import com.github.rafaelfernandes.service.adapter.in.web.response.ServiceResponse;
@@ -93,12 +92,12 @@ public class ServiceController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<ServiceResponse> getBydId(@PathVariable final String serviceId){
-        var serviceIdModel = new Service.ReservationId(serviceId);
+        var serviceIdModel = new Service.ServiceId(serviceId);
 
         var serviceData = useCase.details(serviceIdModel);
 
         var response = new ServiceResponse(
-                serviceData.getReservationId().id(),
+                serviceData.getServiceId().id(),
                 serviceData.getRestaurantId().id(),
                 new OpeningHourServiceResponse(
                         serviceData.getOpeningHour().getDayOfWeek(),

@@ -45,7 +45,7 @@ public class ManageServiceAdapter implements ManageServicePort {
 
 
     @Override
-    public Service details(Service.ReservationId reservationId) {
+    public Service details(Service.ServiceId reservationId) {
         return null;
     }
 }

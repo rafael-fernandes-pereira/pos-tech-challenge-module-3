@@ -16,19 +16,19 @@ public class ManageServiceService implements com.github.rafaelfernandes.service.
     private final ManageServicePort manageReservationPort;
 
     @Override
-    public Service.ReservationId create(Restaurant.RestaurantId restaurantId, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables) {
+    public Service.ServiceId create(Restaurant.RestaurantId restaurantId, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables) {
         var exists = manageReservationPort.existsService(restaurantId, openingHour, date);
 
         if (exists) throw new ReservationDuplicateException();
 
         var resservation = manageReservationPort.save(restaurantId, openingHour, date, tables);
 
-        return resservation.getReservationId();
+        return resservation.getServiceId();
 
     }
 
     @Override
-    public Service details(Service.ReservationId reservationId) {
+    public Service details(Service.ServiceId reservationId) {
         return manageReservationPort.details(reservationId);
     }
 

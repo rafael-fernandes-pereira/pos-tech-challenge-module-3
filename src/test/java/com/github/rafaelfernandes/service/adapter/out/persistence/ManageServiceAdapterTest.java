@@ -84,7 +84,7 @@ class ManageServiceAdapterTest {
 
         // Assert
         assertNotNull(savedService);
-        assertNotNull(savedService.getReservationId());
+        assertNotNull(savedService.getServiceId());
         assertNotNull(savedService.getRestaurantId());
         assertNotNull(savedService.getOpeningHour());
         assertNotNull(savedService.getDate());

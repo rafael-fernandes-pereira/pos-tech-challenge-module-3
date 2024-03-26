@@ -36,7 +36,7 @@ public class ManageServiceServiceTest {
             ManageServiceService manageReservationUseCase = new ManageServiceService(manageReservationPort);
 
             // Execução do método a ser testado
-            Service.ReservationId reservationId = manageReservationUseCase.create(restaurant.getRestaurantId(), openingHour, date, tables);
+            Service.ServiceId reservationId = manageReservationUseCase.create(restaurant.getRestaurantId(), openingHour, date, tables);
 
             // Verificação dos resultados
             assertNotNull(reservationId);

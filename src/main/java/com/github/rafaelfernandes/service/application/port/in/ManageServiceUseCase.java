@@ -7,9 +7,9 @@ import java.time.LocalDate;
 
 public interface ManageServiceUseCase {
 
-    Service.ReservationId create(Restaurant.RestaurantId restaurantid, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables);
+    Service.ServiceId create(Restaurant.RestaurantId restaurantid, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables);
 
-    Service details(Service.ReservationId reservationId);
+    Service details(Service.ServiceId reservationId);
 
     Boolean update(Service reservation);
 

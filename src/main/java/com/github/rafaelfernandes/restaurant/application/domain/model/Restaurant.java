@@ -112,7 +112,7 @@ public class Restaurant {
             this.end = end;
             validate(this);
 
-            if (this.end.isBefore(this.start)) throw new ValidationException("O horário final deve ser depois do inicial");
+            if (this.end.isBefore(this.start) || this.end.equals(this.start)) throw new ValidationException("O horário final deve ser depois do inicial");
 
         }
     }

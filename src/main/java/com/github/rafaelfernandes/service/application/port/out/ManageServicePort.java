@@ -9,7 +9,7 @@ public interface ManageServicePort {
 
     Boolean existsService(Restaurant.RestaurantId restaurantId, Restaurant.OpeningHour openingHour, LocalDate date);
 
-    Service save(Restaurant.RestaurantId restaurantId, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables);
+    Service save(Service service);
 
     Service details(Service.ServiceId reservationId);
 

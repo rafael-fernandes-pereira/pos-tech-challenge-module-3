@@ -1,14 +1,12 @@
 package com.github.rafaelfernandes.restaurant.adapter.out.persistence;
 
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
-import com.github.rafaelfernandes.restaurant.application.port.out.GetRestaurantPort;
 import com.github.rafaelfernandes.common.annotations.PersistenceAdapter;
 import com.github.rafaelfernandes.common.enums.Cuisine;
-import com.github.rafaelfernandes.common.exception.RestaurantDuplicateException;
+import com.github.rafaelfernandes.restaurant.exception.RestaurantDuplicateException;
 import com.github.rafaelfernandes.restaurant.application.port.out.ManageRestaurantPort;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;

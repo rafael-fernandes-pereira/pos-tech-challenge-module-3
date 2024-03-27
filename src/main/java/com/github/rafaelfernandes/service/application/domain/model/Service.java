@@ -1,6 +1,7 @@
 package com.github.rafaelfernandes.service.application.domain.model;
 
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
+import jakarta.validation.ValidationException;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -19,10 +20,8 @@ import static com.github.rafaelfernandes.common.validation.Validation.validate;
 public class Service {
     private final ServiceId serviceId;
 
-    private Restaurant.RestaurantId restaurantId;
-
     @NotNull(message = "O campo deve estar preenchido")
-    private Restaurant restaurant;
+    private Restaurant.RestaurantId restaurantId;
 
     @NotNull(message = "O campo deve estar preenchido")
     private Restaurant.OpeningHour openingHour;
@@ -57,7 +56,9 @@ public class Service {
 
     public Service(Restaurant restaurant, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables) {
 
-        this.restaurant = restaurant;
+        if (restaurant == null) throw new ValidationException("restaurant: O campo deve estar preenchido");
+
+        this.restaurantId = restaurant.getRestaurantId();
         this.openingHour = openingHour;
         this.date = date;
         this.tables = tables;
@@ -76,7 +77,5 @@ public class Service {
         if (tables > restaurant.getTables()) throw new IllegalArgumentException("tables: o número de mesas para o serviço é maior que a cadastrada no restaurante");
 
         this.serviceId = new ServiceId(UUID.randomUUID().toString());
-
-
     }
 }

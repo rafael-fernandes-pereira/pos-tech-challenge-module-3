@@ -1,13 +1,10 @@
 package com.github.rafaelfernandes.restaurant.application.domain.service;
 
 import com.github.rafaelfernandes.common.enums.Cuisine;
-import com.github.rafaelfernandes.common.exception.RestaurantDuplicateException;
-import com.github.rafaelfernandes.common.exception.RestaurantNotFoundException;
+import com.github.rafaelfernandes.restaurant.exception.RestaurantDuplicateException;
+import com.github.rafaelfernandes.restaurant.exception.RestaurantNotFoundException;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.restaurant.application.port.out.ManageRestaurantPort;
-import com.github.rafaelfernandes.service.application.domain.model.Service;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,7 +15,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

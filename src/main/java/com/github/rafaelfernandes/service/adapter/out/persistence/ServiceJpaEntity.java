@@ -19,22 +19,22 @@ public class ServiceJpaEntity {
     @Id
     private UUID id;
 
-    @Column
+    @Column(nullable = false)
     private UUID restaurantId;
 
-    @Column
+    @Column(nullable = false)
     private LocalDate date;
 
-    @Column(name = "day_of_week")
+    @Column(name = "day_of_week", nullable = false)
     private String dayOfWeek;
 
-    @Column(name = "start_time")
+    @Column(name = "start_time", nullable = false)
     private LocalTime start;
 
-    @Column(name = "end_time")
+    @Column(name = "end_time", nullable = false)
     private LocalTime end;
 
-    @Column
+    @Column(nullable = false)
     private Integer tables;
 
 

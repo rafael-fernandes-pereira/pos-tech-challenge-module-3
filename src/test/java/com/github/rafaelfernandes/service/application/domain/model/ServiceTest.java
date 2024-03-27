@@ -2,6 +2,7 @@ package com.github.rafaelfernandes.service.application.domain.model;
 
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -27,8 +28,8 @@ class ServiceTest {
     @Nested
     class Validate {
 
-        Restaurant restaurant = Mockito.mock(Restaurant.class);
-        Restaurant.OpeningHour openingHour = Mockito.mock(Restaurant.OpeningHour.class);
+        Restaurant restaurant = GenerateData.createRestaurant();
+        Restaurant.OpeningHour openingHour = restaurant.getOpeningHours().get(0);
         LocalDate date = LocalDate.now();
         Integer tables = 10;
 
@@ -37,7 +38,7 @@ class ServiceTest {
 
             var service = new Service(restaurant, openingHour, date, tables);
 
-            assertThat(service.getRestaurant()).isEqualTo(restaurant);
+            assertThat(service.getRestaurantId()).isEqualTo(restaurant.getRestaurantId());
             assertThat(service.getOpeningHour()).isEqualTo(openingHour);
             assertThat(service.getDate()).isEqualTo(date);
             assertThat(service.getTables()).isEqualTo(tables);
@@ -82,7 +83,7 @@ class ServiceTest {
                 assertThatCode(() -> {
                     new Service(restaurant, openingHour, date, tables);
                 })
-                        .isInstanceOf(ConstraintViolationException.class)
+                        .isInstanceOf(ValidationException.class)
                         .hasMessageContaining("restaurant: O campo deve estar preenchido");
             }
 

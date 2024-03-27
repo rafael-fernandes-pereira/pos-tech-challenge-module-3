@@ -2,102 +2,154 @@ package com.github.rafaelfernandes.service.adapter.out.persistence;
 
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import com.github.rafaelfernandes.service.application.domain.model.Service;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import util.GenerateData;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@DataJpaTest
+@Import({ManageServiceAdapter.class, ServicePersistenceMapper.class})
 class ManageServiceAdapterTest {
 
-    @Mock
-    private ServiceRepository serviceRepository;
+    @Autowired
+    private ManageServiceAdapter adapter;
 
-    @InjectMocks
-    private ManageServiceAdapter manageServiceAdapter;
+    @Autowired
+    private ServicePersistenceMapper mapper;
 
-    public ManageServiceAdapterTest() {
-        MockitoAnnotations.initMocks(this);
+    @Autowired
+    private ServiceRepository repository;
+
+    @AfterEach
+    void tearDown(){
+        repository.deleteAll();
     }
 
-    @Test
-    public void testExistsService_True() {
-        // Arrange
-        Restaurant.RestaurantId restaurantId = new Restaurant.RestaurantId(UUID.randomUUID().toString());
-        Restaurant.OpeningHour openingHour = new Restaurant.OpeningHour("Monday", LocalTime.of(9, 0), LocalTime.of(17, 0));
-        LocalDate date = LocalDate.of(2024, 3, 25);
+    @Nested
+    class ExistsService {
 
-        var lista = new ArrayList<ServiceJpaEntity>();
-        lista.add(Mockito.mock(ServiceJpaEntity.class));
+        Restaurant.OpeningHour openingHour;
+        Restaurant.RestaurantId restaurantId;
 
-        when(serviceRepository.findByCriteria(any(UUID.class), any(LocalDate.class), anyString(), any(LocalTime.class), any(LocalTime.class))).thenReturn(lista);
+        LocalDate date;
+        @BeforeEach
+        void setUp(){
 
-        // Act
-        boolean exists = manageServiceAdapter.existsService(restaurantId, openingHour, date);
+            UUID serviceId = UUID.fromString("0826faa6-4157-47d0-a0e8-c645c71bbe63");
+            UUID restaurantIdServiceId = UUID.fromString("4cc6b67d-63ee-4b75-8504-f48d9a200861");
+            String dayOfWeek = DayOfWeek.MONDAY.name();
+            LocalTime start = LocalTime.of(10,0);
+            LocalTime end = LocalTime.of(14,0);
+            Integer tables = 10;
 
-        // Assert
-        assertTrue(exists);
-        verify(serviceRepository, times(1)).findByCriteria(any(UUID.class), any(LocalDate.class), anyString(), any(LocalTime.class), any(LocalTime.class));
+            date = LocalDate.now();
+
+            openingHour = new Restaurant.OpeningHour(
+                    dayOfWeek, start, end
+            );
+
+            restaurantId = new Restaurant.RestaurantId(restaurantIdServiceId.toString());
+
+            ServiceJpaEntity entity = new ServiceJpaEntity();
+            entity.setId(serviceId);
+            entity.setRestaurantId(restaurantIdServiceId);
+            entity.setDate(date);
+            entity.setDayOfWeek(dayOfWeek);
+            entity.setStart(start);
+            entity.setEnd(end);
+            entity.setTables(tables);
+
+            repository.save(entity);
+
+
+        }
+
+        @Test
+        void validateServiceExistsSame() {
+
+            // Act
+            var exists = adapter.existsService(restaurantId, openingHour, date);
+
+            // Assert
+            assertThat(exists).isTrue();
+
+        }
+
+        @Test
+        void validateServiceExistsBetweenStartEnd() {
+
+            // Arrange
+            openingHour = new Restaurant.OpeningHour(
+                    DayOfWeek.MONDAY.name(),
+                    LocalTime.of(11,0),
+                    LocalTime.of(12,0)
+            );
+
+            // Act
+            var exists = adapter.existsService(restaurantId, openingHour, date);
+
+            // Assert
+            assertThat(exists).isTrue();
+
+        }
+
+        @Test
+        void calidateServiceNotExists(){
+
+            // Arrange
+            restaurantId = new Restaurant.RestaurantId("e5756cc4-2c05-4ca9-8eac-679fc40dc941");
+
+            // Act
+            var exists = adapter.existsService(restaurantId, openingHour, date);
+
+            // Assert
+            assertThat(exists).isFalse();
+
+        }
+
     }
 
-    @Test
-    public void testExistsService_False() {
-        // Arrange
-        Restaurant.RestaurantId restaurantId = new Restaurant.RestaurantId(UUID.randomUUID().toString());
-        Restaurant.OpeningHour openingHour = new Restaurant.OpeningHour("Monday", LocalTime.of(9, 0), LocalTime.of(17, 0));
-        LocalDate date = LocalDate.of(2024, 3, 25);
-        when(serviceRepository.findByCriteria(any(UUID.class), any(LocalDate.class), anyString(), any(LocalTime.class), any(LocalTime.class))).thenReturn(new ArrayList<>());
+    @Nested
+    class Save {
 
-        // Act
-        boolean exists = manageServiceAdapter.existsService(restaurantId, openingHour, date);
+        @Test
+        void validateSave(){
 
-        // Assert
-        assertFalse(exists);
-        verify(serviceRepository, times(1)).findByCriteria(any(UUID.class), any(LocalDate.class), anyString(), any(LocalTime.class), any(LocalTime.class));
-    }
+            // Arrange
+            var restaurant = GenerateData.createRestaurant();
 
-    @Test
-    public void testSave() {
-        // Arrange
-        Restaurant.RestaurantId restaurantId = Mockito.mock(Restaurant.RestaurantId.class);
-        Restaurant.OpeningHour openingHour = new Restaurant.OpeningHour("Monday", LocalTime.of(8, 0), LocalTime.of(18, 0));
-        LocalDate date = LocalDate.now();
-        Integer tables = 10;
+            var openingHour = restaurant.getOpeningHours().get(0);
 
-        // Mock para o repository save
-        ServiceJpaEntity savedEntity = new ServiceJpaEntity(UUID.randomUUID(), UUID.randomUUID(), date, "Monday", LocalTime.of(8, 0), LocalTime.of(18, 0), tables);
-        when(serviceRepository.save(any(ServiceJpaEntity.class))).thenReturn(savedEntity);
+            var date = LocalDate.now().plusDays(2);
 
-        // Act
-        Service savedService = manageServiceAdapter.save(restaurantId, openingHour, date, tables);
+            var tables = 1;
 
-        // Assert
-        assertNotNull(savedService);
-        assertNotNull(savedService.getServiceId());
-        assertNotNull(savedService.getRestaurantId());
-        assertNotNull(savedService.getOpeningHour());
-        assertNotNull(savedService.getDate());
-        assertNotNull(savedService.getTables());
-        assertEquals(restaurantId.id(), savedService.getRestaurantId().id());
-        assertEquals(openingHour.getDayOfWeek(), savedService.getOpeningHour().getDayOfWeek());
-        assertEquals(openingHour.getStart(), savedService.getOpeningHour().getStart());
-        assertEquals(openingHour.getEnd(), savedService.getOpeningHour().getEnd());
-        assertEquals(date, savedService.getDate());
-        assertEquals(tables, savedService.getTables());
+            var service = new Service(restaurant, openingHour, date, tables);
 
-        // Verificar se o método save do repository foi chamado
-        verify(serviceRepository, times(1)).save(any(ServiceJpaEntity.class));
+            // Act
+            var serviceSaved = adapter.save(service);
+
+            // Assert
+            assertThat(serviceSaved.getServiceId()).isEqualTo(service.getServiceId());
+            assertThat(serviceSaved.getRestaurantId()).isEqualTo(service.getRestaurantId());
+            assertThat(serviceSaved.getOpeningHour()).isEqualTo(service.getOpeningHour());
+            assertThat(serviceSaved.getDate()).isEqualTo(service.getDate());
+            assertThat(serviceSaved.getTables()).isEqualTo(service.getTables());
+
+
+        }
+
     }
 
 }

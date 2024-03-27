@@ -1,4 +1,4 @@
-package com.github.rafaelfernandes.common.exception;
+package com.github.rafaelfernandes.restaurant.exception;
 
 public class RestaurantNotFoundException extends RuntimeException{
 

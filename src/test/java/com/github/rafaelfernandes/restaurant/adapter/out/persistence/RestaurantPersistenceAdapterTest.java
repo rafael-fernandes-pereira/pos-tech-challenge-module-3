@@ -1,7 +1,6 @@
 package com.github.rafaelfernandes.restaurant.adapter.out.persistence;
 
 import com.github.rafaelfernandes.common.enums.Cuisine;
-import com.github.rafaelfernandes.common.exception.RestaurantDuplicateException;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
 import org.junit.jupiter.api.BeforeEach;
 import util.GenerateData;

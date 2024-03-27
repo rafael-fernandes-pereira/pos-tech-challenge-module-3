@@ -415,6 +415,21 @@ public class RestaurantTest {
                 }
 
                 @Test
+                void validateEndIsSameStart(){
+
+                    var start = LocalTime.of(10, 0);
+                    var end = LocalTime.of(10, 0);
+
+                    assertThatCode(() -> {
+                        new Restaurant.OpeningHour(dayOfWeek, start, end);
+                    })
+                            .isInstanceOf(ValidationException.class)
+                            .hasMessageContaining("O horário final deve ser depois do inicial")
+                    ;
+
+                }
+
+                @Test
                 void validateSuccessStartEnd(){
 
                     var openingHour = new Restaurant.OpeningHour(dayOfWeek, start, end);

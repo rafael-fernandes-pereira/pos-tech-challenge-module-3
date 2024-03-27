@@ -1,6 +1,8 @@
 package com.github.rafaelfernandes.service.application.domain.service;
 
-import com.github.rafaelfernandes.common.exception.ReservationDuplicateException;
+import com.github.rafaelfernandes.common.enums.Cuisine;
+import com.github.rafaelfernandes.service.exception.ServiceDuplicateException;
+import com.github.rafaelfernandes.restaurant.application.port.in.ManageRestaurantUseCase;
 import com.github.rafaelfernandes.service.application.domain.model.Service;
 import com.github.rafaelfernandes.service.application.port.out.ManageServicePort;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
@@ -8,60 +10,76 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 public class ManageServiceServiceTest {
 
+    private final ManageServicePort manageServicePort = Mockito.mock(ManageServicePort.class);
+    private final ManageRestaurantUseCase manageRestaurantUseCase = Mockito.mock(ManageRestaurantUseCase.class);
+    private final ManageServiceService manageReservationUseCase = new ManageServiceService(manageServicePort, manageRestaurantUseCase);
+
+    Restaurant.Address address = Mockito.mock(Restaurant.Address.class);
+    Restaurant.OpeningHour openingHour = new Restaurant.OpeningHour(
+            DayOfWeek.MONDAY.name(),
+            LocalTime.of(10, 0),
+            LocalTime.of(15, 10)
+    );
+    ArrayList<Restaurant.OpeningHour> openingHours = new ArrayList<>(){{
+        add(openingHour);
+    }};
+    ArrayList<Restaurant.Cuisine> cuisines = new ArrayList<>(){{
+        add(new Restaurant.Cuisine(Cuisine.BRAZILIAN.getName()));
+    }};
+    String name = "Chorume Gastrobar";
+
+    Integer tables = 1;
+    Restaurant restaurant = new Restaurant(name, address,openingHours, cuisines, tables);
+
+    LocalDate date = LocalDate.now();
+
+
     @Nested
     class Create {
 
         @Test
-        public void testCreate() {
-            // Criação de mocks
-            ManageServicePort manageReservationPort = Mockito.mock(ManageServicePort.class);
-            Restaurant restaurant = Mockito.mock(Restaurant.class);
-            Restaurant.RestaurantId restaurantId = Mockito.mock(Restaurant.RestaurantId.class);
-            Restaurant.OpeningHour openingHour = Mockito.mock(Restaurant.OpeningHour.class);
-            LocalDate date = LocalDate.now();
-            Integer tables = 1;
+        void validateServiceExists(){
 
-            // Configuração do mock
-            Mockito.when(manageReservationPort.existsService(any(Restaurant.RestaurantId.class), any(Restaurant.OpeningHour.class), any(LocalDate.class))).thenReturn(false);
-            Mockito.when(manageReservationPort.save(any(Restaurant.RestaurantId.class), any(Restaurant.OpeningHour.class), any(LocalDate.class), any(Integer.class))).thenReturn(new Service("123e4567-e89b-12d3-a456-426614174000", restaurantId, openingHour, date, tables));
+            Mockito.when(manageServicePort.existsService(any(Restaurant.RestaurantId.class), any(Restaurant.OpeningHour.class), any(LocalDate.class))).thenReturn(true);
 
-            // Criação do objeto a ser testado
-            ManageServiceService manageReservationUseCase = new ManageServiceService(manageReservationPort);
+            assertThatCode(() -> {
+                manageReservationUseCase.create(restaurant.getRestaurantId(), openingHour, date, tables);
+            })
+                    .isInstanceOf(ServiceDuplicateException.class)
+                    .hasMessageContaining("Serviço para essa data e para esse horário já existe!");
 
-            // Execução do método a ser testado
-            Service.ServiceId reservationId = manageReservationUseCase.create(restaurant.getRestaurantId(), openingHour, date, tables);
-
-            // Verificação dos resultados
-            assertNotNull(reservationId);
-            assertEquals("123e4567-e89b-12d3-a456-426614174000", reservationId.id());
         }
 
         @Test
-        public void testCreateWithExistingReservation() {
-            // Criação de mocks
-            ManageServicePort manageReservationPort = Mockito.mock(ManageServicePort.class);
-            Restaurant restaurant = Mockito.mock(Restaurant.class);
-            Restaurant.OpeningHour openingHour = Mockito.mock(Restaurant.OpeningHour.class);
-            LocalDate date = LocalDate.now();
-            Integer tables = 1;
+        void testCreate() {
 
-            // Configuração do mock
-            Mockito.when(manageReservationPort.existsService(restaurant.getRestaurantId(), openingHour, date)).thenReturn(true);
+            // Arrange
 
-            // Criação do objeto a ser testado
-            ManageServiceService manageReservationUseCase = new ManageServiceService(manageReservationPort);
+            Mockito.when(manageServicePort.existsService(any(Restaurant.RestaurantId.class), any(Restaurant.OpeningHour.class), any(LocalDate.class))).thenReturn(false);
+            Mockito.when(manageRestaurantUseCase.findById(any(Restaurant.RestaurantId.class))).thenReturn(restaurant);
 
-            // Execução do método a ser testado e verificação da exceção
-            assertThrows(ReservationDuplicateException.class, () -> {
-                manageReservationUseCase.create(restaurant.getRestaurantId(), openingHour, date, tables);
-            });
+            var service = new Service(restaurant, openingHour, date, tables);
+
+            Mockito.when(manageServicePort.save(any(Service.class))).thenReturn(service);
+
+            // Act
+
+            Service.ServiceId serviceId = manageReservationUseCase.create(restaurant.getRestaurantId(), openingHour, date, tables);
+
+            // Assert
+            assertNotNull(serviceId);
+
         }
 
     }

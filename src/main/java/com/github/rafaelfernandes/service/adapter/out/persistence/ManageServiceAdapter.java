@@ -13,34 +13,32 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ManageServiceAdapter implements ManageServicePort {
 
-    private final ServiceRepository serviceRepository;
+    private final ServiceRepository repository;
+    private final ServicePersistenceMapper mapper;
 
     @Override
     public Boolean existsService(Restaurant.RestaurantId restaurantId, Restaurant.OpeningHour openingHour, LocalDate date) {
 
-        return !serviceRepository.findByCriteria(UUID.fromString(restaurantId.id()), date, openingHour.getDayOfWeek(), openingHour.getStart(), openingHour.getEnd()).isEmpty();
+        return !repository
+                .findByCriteria(
+                        UUID.fromString(restaurantId.id()),
+                        date,
+                        openingHour.getDayOfWeek(),
+                        openingHour.getStart(),
+                        openingHour.getEnd()
+                )
+                .isEmpty();
 
     }
 
     @Override
-    public Service save(Restaurant.RestaurantId restaurantId, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables) {
-        // Criar uma instância de ServiceJpaEntity
-        ServiceJpaEntity serviceEntity = new ServiceJpaEntity();
-        serviceEntity.setId(UUID.randomUUID()); // Gera um novo UUID para o serviço
-        serviceEntity.setRestaurantId(UUID.fromString(restaurantId.id())); // Converte o UUID do restaurante
-        serviceEntity.setDate(date);
-        serviceEntity.setDayOfWeek(openingHour.getDayOfWeek());
-        serviceEntity.setStart(openingHour.getStart());
-        serviceEntity.setEnd(openingHour.getEnd());
-        serviceEntity.setTables(tables);
+    public Service save(Service service) {
 
-        // Salvar a entidade usando o repository
-        ServiceJpaEntity savedEntity = serviceRepository.save(serviceEntity);
+        var entity = mapper.toEntity(service);
 
-        // Criar e retornar um objeto Service com base na entidade salva
-        return new Service(savedEntity.getId().toString(), new Restaurant.RestaurantId(savedEntity.getRestaurantId().toString()),
-                new Restaurant.OpeningHour(savedEntity.getDayOfWeek(), savedEntity.getStart(), savedEntity.getEnd()),
-                savedEntity.getDate(), savedEntity.getTables());
+        ServiceJpaEntity savedEntity = repository.save(entity);
+
+        return mapper.toModel(savedEntity);
     }
 
 

@@ -1,7 +1,8 @@
 package com.github.rafaelfernandes.service.application.domain.service;
 
 import com.github.rafaelfernandes.common.annotations.UseCase;
-import com.github.rafaelfernandes.common.exception.ReservationDuplicateException;
+import com.github.rafaelfernandes.service.exception.ServiceDuplicateException;
+import com.github.rafaelfernandes.restaurant.application.port.in.ManageRestaurantUseCase;
 import com.github.rafaelfernandes.service.application.domain.model.Service;
 import com.github.rafaelfernandes.service.application.port.out.ManageServicePort;
 import com.github.rafaelfernandes.restaurant.application.domain.model.Restaurant;
@@ -13,23 +14,29 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class ManageServiceService implements com.github.rafaelfernandes.service.application.port.in.ManageServiceUseCase {
 
-    private final ManageServicePort manageReservationPort;
+    private final ManageServicePort manageServicePort;
+    private final ManageRestaurantUseCase manageRestaurantUseCase;
 
     @Override
     public Service.ServiceId create(Restaurant.RestaurantId restaurantId, Restaurant.OpeningHour openingHour, LocalDate date, Integer tables) {
-        var exists = manageReservationPort.existsService(restaurantId, openingHour, date);
 
-        if (exists) throw new ReservationDuplicateException();
+        var exists = manageServicePort.existsService(restaurantId, openingHour, date);
 
-        var resservation = manageReservationPort.save(restaurantId, openingHour, date, tables);
+        if (Boolean.TRUE.equals(exists)) throw new ServiceDuplicateException();
 
-        return resservation.getServiceId();
+        var restaurant = manageRestaurantUseCase.findById(restaurantId);
+
+        var serviceToSave = new Service(restaurant, openingHour, date, tables);
+
+        var service = manageServicePort.save(serviceToSave);
+
+        return service.getServiceId();
 
     }
 
     @Override
     public Service details(Service.ServiceId reservationId) {
-        return manageReservationPort.details(reservationId);
+        return manageServicePort.details(reservationId);
     }
 
     @Override

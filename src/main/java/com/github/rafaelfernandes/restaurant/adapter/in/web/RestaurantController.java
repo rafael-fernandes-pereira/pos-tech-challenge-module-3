@@ -1,5 +1,6 @@
 package com.github.rafaelfernandes.restaurant.adapter.in.web;
 
+import com.github.rafaelfernandes.common.response.ErrorResponse;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.request.RestaurantRequest;
 import com.github.rafaelfernandes.restaurant.adapter.in.web.response.*;
 import com.github.rafaelfernandes.restaurant.application.port.in.*;
@@ -106,14 +107,14 @@ public class RestaurantController {
                     description = "Bad request", responseCode = "400",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RestaurantError.class)
+                            schema = @Schema(implementation = ErrorResponse.class)
                     )
             ),
             @ApiResponse(
                     description = "Not found", responseCode = "404",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RestaurantError.class)
+                            schema = @Schema(implementation = ErrorResponse.class)
                     )
             )
     })
@@ -147,14 +148,14 @@ public class RestaurantController {
                     description = "Bad request", responseCode = "400",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RestaurantError.class)
+                            schema = @Schema(implementation = ErrorResponse.class)
                     )
             ),
             @ApiResponse(
                     description = "Not found", responseCode = "404",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RestaurantError.class)
+                            schema = @Schema(implementation = ErrorResponse.class)
                     )
             )
     })
